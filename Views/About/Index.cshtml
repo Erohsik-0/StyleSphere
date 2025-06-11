@@ -1,0 +1,119 @@
+﻿@{
+    Layout = null; // No layout for this view
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StyleSphere</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!--Preloader-->
+    <div id="preloader">
+        <!--<div class="tear-text" data-text="Loading...">Loading...</div>-->
+    </div>
+
+    <div class="about-header">
+        <div class="container">
+
+            <div class="navbar">
+
+                <h1>StyleSphere</h1>
+
+                <nav class="nav-link">
+                    <ul id="menu-items">
+                        <li><a href="Home">Home</a></li>
+                        <li><a href="Products">Products</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="Contact">Contact</a></li>
+                        <li><a href="Account">Account</a></li>
+                    </ul>
+                </nav>
+                <a href="Cart"><img src="../images/cart.png" width="30px" height="30px" class="cart" /></a>
+                <img src="~/images/menu.png" class="menu-icon" onclick="menuToggle()" />
+            </div>
+        </div>
+    </div>
+
+
+    @* About page *@
+     
+    <div class="about">
+        <div class="about-container">
+            <div class="about-row">
+                <div class="about-col1">
+                    <img src="~/images/user-img-1.png" id="about-img"/>
+                </div>
+                <div class="about-col2">
+                    <h1 id="subtitle">About Me</h1>
+                    <p>StyleSphere features a curated range of eco-conscious products crafted from premium bamboo cotton, known for its rich texture and lasting quality. As someone deeply passionate about web development, I built this platform to blend technology with sustainability. Creating StyleSphere has been a rewarding journey, reflecting both my coding skills and my commitment to ethical fashion</p>
+                    <div class="tab-titles">
+                        <p class="tab-links active-link" onclick="opentab('skills')">Skills</p>
+                        <p class="tab-links " onclick="opentab('experience')">Experience</p>
+                    </div>
+                    <div class="tab-contents active-tab" id="skills">
+                        <ul>
+                            <li><span>Web Development</span><br />Front-End Development</li>
+                            <li><span>UI/UX</span><br />Designing Webapp interfaces</li>
+                        </ul>
+                    </div>
+                    <div class="tab-contents" id="experience">
+                        <ul>
+                            <li><span>2025 - Current</span><br />Software Engineer Training</li>
+                            <li><span>2024 - 2025</span><br />Chat App Development</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!--Footer-->
+    <div class="footer" id="footer-id">
+        <div class="small-container">
+            <div class="row">
+                <div class="col-3">
+                    <h3>Made with care and love...</h3>
+                    <p>Eco-wears and sports-fit in a line of handcrafted clothing made from eco-friendly materials with a foucs of sustainability and responsible production.</p>
+                </div>
+                <div class="col-3">
+                    <img src="../images/brandlogo.png" />
+                </div>
+            </div>
+        </div>
+        <hr />
+        <p class="copyright">Copyright 2025 - SytleSphere</p>
+    </div>
+
+
+    <script>
+        let tablinks = document.getElementsByClassName("tab-links");
+        let tabcontents = document.getElementsByClassName("tab-contents");
+
+        //About - Container for SKills and Experience
+        function opentab(tabname) {
+            for (tablink of tablinks) {
+                tablink.classList.remove("active-link");
+            }
+            for (tabcontent of tabcontents) {
+                tabcontent.classList.remove("active-tab");
+            }
+
+            event.currentTarget.classList.add("active-link");
+            document.getElementById(tabname).classList.add("active-tab");
+        }
+
+
+    </script>
+    <script src="~/js/site.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+﻿@{
+    Layout = null; // No layout for this view
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Products-StyleSphere</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!--Preloader-->
+    <div id="preloader">
+        <!--<div class="tear-text" data-text="Loading...">Loading...</div>-->
+    </div>
+
+
+    <div class="header" id="cart-header">
+        <div class="container">
+            <div class="navbar">
+                <nav class="nav-link">
+                    <ul id="menu-items">
+                        <li><a href="/Home">Home</a></li>
+                        <li><a href="/Products">Products</a></li>
+                        <li><a href="/About">About</a></li>
+                        <li><a href="/Contact">Contact</a></li>
+                        <li><a href="/Account">Account</a></li>
+                    </ul>
+                </nav>
+                <a href="/Cart"><img src="~/images/cart.png" width="30px" height="30px" class="cart" /></a>
+            </div>
+        </div>
+    </div>
+
+    
+    @* Cart Items Details *@
+    <div class="small-container" id="cart-page">
+
+        <table>
+            
+            @*
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr> *@
+            @* <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src="~/images/buy-1.jpg"/>
+                        <div>
+                            <p>Red Printed T-Shirt</p>
+                            <small>Price: ₹500.00</small>
+                            <br />
+                            <a href="">Remove</a>
+                        </div>
+                    </div>
+                </td>
+                <td><input type="number" value="1"/></td>
+                <td>₹500.00</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src="~/images/buy-2.jpg"/>
+                        <div>
+                            <p>Black Sports Shoe</p>
+                            <small>Price: ₹500.00</small>
+                            <br />
+                            <a href="">Remove</a>
+                        </div>
+                    </div>
+                </td>
+                <td><input type="number" value="1"/></td>
+                <td>₹500.00</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src="~/images/buy-3.jpg"/>
+                        <div>
+                            <p>Grey Track Pant</p>
+                            <small>Price: ₹500.00</small>
+                            <br />
+                            <a href="">Remove</a>
+                        </div>
+                    </div>
+                </td>
+                <td><input type="number" value="1"/></td>
+                <td>₹500.00</td>
+            </tr> *@
+        </table>
+
+        <div class="total-price">
+
+            <table>
+                @* <tr>
+                    <td>Subtotal</td>
+                    <td>₹1500.00</td>
+                </tr>
+                <tr>
+                    <td>Tax</td>
+                    <td>₹300.00</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>₹1800.00</td>
+                </tr> *@
+            </table>
+        </div>
+
+    </div>
+
+
+    <!--Footer-->
+    <div class="footer cart-footer" id="footer-id">
+        <div class="small-container">
+            <div class="row">
+                <div class="col-3">
+                    <h3>Made with care and love...</h3>
+                    <p>Eco-wears and sports-fit in a line of handcrafted clothing made from eco-friendly materials with a foucs of sustainability and responsible production.</p>
+                </div>
+                <div class="col-3">
+                    <img src="~/images/brandlogo.png" />
+                </div>
+            </div>
+        </div>
+        <hr />
+        <p class="copyright">Copyright 2025 - StyleSphere</p>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/site.js"></script>
+    
+    <script>
+
+        $(document).ready( function() {
+            let cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
+
+            $.getJSON("/Products/GetProducts" , function() {
+                let cartHtml = "";
+                let total = 0;
+
+                cartItems.forEach( item => {
+                    let product = cartItems.find(p => p.id === item.id);
+                    if ( product ) {
+                        console.log(product);
+                        let subtotal = item.quantity * product.price;
+                        total += subtotal;
+                        cartHtml += `
+                            <tr>
+                                <td>
+                                    <div class="cart-info">
+                                        <img src="/${product.image}"/>
+                                        <div>
+                                            <p>${product.name}</p>
+                                            <small>Price: ${product.price}</small><br />
+                                            <a href="#" class="remove-item" data-id="${item.id}">Remove</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><input type="number" class="update-quantity" data-id="${item.id}" value="${item.quantity}" /></td>
+                                <td>₹${subtotal}</td>
+                            </tr>
+                        `;
+                    }
+
+                });
+
+                //Updating the cart table dynamically
+                $("#cart-page table").html(`
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    ${cartHtml}
+                `);
+
+                //Updating the price dynamically
+                $(".total-price table").html(`
+                    <tr><td>SubTotal</td> <td>${total}</td></tr>
+                    <tr><td>Tax</td> <td>${total * 0.2}</td></tr>
+                    <tr><td>Total</td> <td>${total * 1.2}</td></tr>
+                `);
+            });
+
+            //Removing item from cart
+            $(document).on("click" , ".remove-item" , function () {
+                let itemId = $(this).data("id");
+                cartItems = cartItems.filter(item => item.id !== itemId);
+                sessionStorage.setItem("cartItems" , JSON.stringify(cartItems));
+                location.reload();
+            });
+
+            //Update Quantity in cart
+            $(document).on("change" , ".update-quantity" , function () {
+                let itemId = $(this).data("id");
+                let newQuantity = $(this).val();
+                cartItems = cartItems.map(item => item.id === itemId ? { ...item , quantity: parseInt(newQuantity)} : item);
+                sessionStorage.setItem("cartItems" , JSON.stringify(cartItems));
+                location.reload();
+            });
+        });
+
+    </script>
+
+    </body>
+</html>

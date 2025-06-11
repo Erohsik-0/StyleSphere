@@ -1,0 +1,254 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>404 - Not Found</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.25);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            animation: slideIn 1s ease-in-out;
+            position: relative;
+            width: 100vw;
+            max-width: 500px;
+            height: 100vh;
+            max-height: 500px;
+            overflow: hidden;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 8rem;
+            color: #ff523b;
+            animation: float 2s infinite ease-in-out;
+            white-space: nowrap;
+            min-height:40px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+           min-height:40px;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 30px;
+            min-height:40px;
+        }
+
+        .btn {
+            background-color: #ff523b;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #e14b32;
+                transform: scale(1.05);
+        }
+
+
+
+        @@keyframes slideIn{
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @@keyframes float{
+            0% ,100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @@media(max-width: 600px){
+            .container {
+                width: 90vw;
+                max-width: 90vw;
+                height: auto;
+                max-height: none;
+                padding: 30px 20px;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            }
+
+            h1 {
+                font-size: 4rem;
+                min-height: 100px;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+                min-height: 30px;
+            }
+
+            p {
+                font-size: 0.95rem;
+                min-height: 30px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+        }
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="typingHeading" class="typewriter-text">404</h1>
+        <h2 id="typingSubheading"></h2>
+        <p id="typingParagraph"></p>
+        <button class="btn" onclick="goHome()">Go to Homepage</button>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = "/Home";
+        }
+
+        const h1El = document.getElementById("typingHeading");
+        const h2El = document.getElementById("typingSubheading");
+        const pEl = document.getElementById("typingParagraph");
+
+        const h1Text = "404";
+        const h2Text = "Page Not Found";
+        const pText = "The page you're looking for might have been removed or never existed.";
+
+        const typingSpeed = 60;
+        const pauseDuration = 1000;
+
+        let state = "typingH1";
+        let index = 0;
+
+        function typeWriter() {
+            switch (state) {
+                case "typingH1":
+                    h1El.textContent = h1Text.substring(0, index + 1);
+                    index++;
+                    if (index < h1Text.length) {
+                        setTimeout(typeWriter, typingSpeed);
+                    } else {
+                        state = "typingH2";
+                        index = 0;
+                        setTimeout(typeWriter, pauseDuration);
+                    }
+                    break;
+
+                case "typingH2":
+                    h2El.textContent = h2Text.substring(0, index + 1);
+                    index++;
+                    if (index < h2Text.length) {
+                        setTimeout(typeWriter, typingSpeed);
+                    } else {
+                        state = "typingP";
+                        index = 0;
+                        setTimeout(typeWriter, pauseDuration);
+                    }
+                    break;
+
+                case "typingP":
+                    pEl.textContent = pText.substring(0, index + 1);
+                    index++;
+                    if (index < pText.length) {
+                        setTimeout(typeWriter, typingSpeed);
+                    } else {
+                        state = "deletingP";
+                        index = pText.length;
+                        setTimeout(typeWriter, pauseDuration);
+                    }
+                    break;
+
+                case "deletingP":
+                    pEl.textContent = pText.substring(0, index - 1);
+                    index--;
+                    if (index >= 0) {
+                        setTimeout(typeWriter, typingSpeed);
+                    } else {
+                        state = "deletingH2";
+                        index = h2Text.length;
+                        setTimeout(typeWriter, pauseDuration);
+                    }
+                    break;
+
+                case "deletingH2":
+                    h2El.textContent = h2Text.substring(0, index - 1);
+                    index--;
+                    if (index >= 0) {
+                        setTimeout(typeWriter, typingSpeed);
+                    } else {
+                        state = "deletingH1";
+                        index = h1Text.length;
+                        setTimeout(typeWriter, pauseDuration);
+                    }
+                    break;
+
+                case "deletingH1":
+                    h1El.textContent = h1Text.substring(0, index - 1);
+                    index--;
+                    if (index >= 0) {
+                        setTimeout(typeWriter, typingSpeed);
+                    } else {
+                        state = "typingH1";
+                        index = 0;
+                        setTimeout(typeWriter, pauseDuration);
+                    }
+                    break;
+            }
+        }
+
+        setTimeout(typeWriter, 500);
+    </script>
+
+    
+</body>
+</html>
