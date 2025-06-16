@@ -1,165 +1,94 @@
 ﻿@{
-    Layout = null; // No layout for this view
-    var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__" });
+ViewData["Title"] = "Products";
+Layout = "_Layout"; 
+var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__" });
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        @@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    </style>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>All Products-StyleSphere</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-</head>
 
-<body>
-    <!--Preloader-->
-    <div id="preloader">
-        <!--<div class="tear-text" data-text="Loading...">Loading...</div>-->
+<!--All-Products-->
+<div class="small-container">
+    <div class="row row-2">
+        <h2>All Products</h2>
+        <select>
+            <option>Default Shopping</option>
+            <option>Sort by price</option>
+            <option>Sort by popularity</option>
+            <option>Sort by rating</option>
+            <option>Sort by sale</option>
+        </select>
     </div>
 
+    <div id="products-container">
+    
 
-    <div class="header" id="products-header">
-        <div class="container">
-            <div class="navbar">
-                <a asp-area="" asp-controller="Home" asp-action="Index"></a><h1>StyleSphere</h1>
-                <nav class="nav-link">
-                    <ul id="menu-items">
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Products" asp-action="Index">Products</a></li>
-                        <li><a asp-controller="About" asp-action="Index">About</a></li>
-                        <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
-                        <li><a asp-controller="Account" asp-action="Index">Account</a></li>
-                    </ul>
-                </nav>
-                <a asp-controller="Cart" asp-action="Index"><img src="../images/cart.png" width="30px" height="30px" class="cart" /></a>
-                <img src="~/images/menu.png" class="menu-icon" onclick="menuToggle()" />
-            </div>
+        <div class="page-btn">
+            <span>1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>&#8594</span>
+        </div>
 
-            @* <div class="hero">
-                <div class="row">
-                    <div class="col-2">
-                        <div class="twrap">
-                            <h1 id="typewriter"></h1>
-                            <br /><br /><br />
-                            <p>Explore the best styles curated for you!</p>
-                            <br />
-                        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/site.js"></script>
+<script>
+    
+    const detailsURLTemplate = "@detailsURLTemplate";
+     
+
+    $(document).ready(function () {
+
+        $.getJSON('/Products/GetProducts' , function (products) {
+
+            // console.log("Loaded Products: ", products); Debug
+
+            const $container = $('#products-container');
+
+            for ( let i = 0; i < products.length; i += 4){
+
+                const $row = $('<div class="row"></div>');
+                const group =  products.slice(i , i + 4);
+                
+                $.each(group , function(index , product) {
+                    let stars='';
+                    for ( let j = 0; j <= 5; j++){
+                        stars += `<i class="fa ${ j <= product.rating ? 'fa-star' : 'fa-star-o'}"></i>`;
+                    }
+
+                    const detailsURL = detailsURLTemplate.replace("__id__" , product.id);
+
+                    const productHTML = `
+                    <div class="col-4 product-item" data-id="${product.id}">
+                        <a href="${detailsURL}">
+                            <img src = "${product.image}" alt="${product.name}" />
+                            <h4> ${ product.name } </h4>
+                            <div class = "rating"> ${ stars } </div>
+                            <p> ${ product.price }</p>
+                            ${ product.link ? `</a>` : ''}
+                        <a>
                     </div>
-                    <div class="col-2 img">
-                        <img src="../images/base.png" alt="baseimg" />
-                    </div>
-                </div>
-            </div> *@
+                    `;
+                    $row.append(productHTML);
+                });
 
-        </div>
-    </div>
-
-    <!--All-Products-->
-    <div class="small-container">
-        <div class="row row-2">
-            <h2>All Products</h2>
-            <select>
-                <option>Default Shopping</option>
-                <option>Sort by price</option>
-                <option>Sort by popularity</option>
-                <option>Sort by rating</option>
-                <option>Sort by sale</option>
-            </select>
-        </div>
-
-        <div id="products-container">
-        
-
-            <div class="page-btn">
-                <span>1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>&#8594</span>
-            </div>
-    
-        </div>
-    </div>
-    
-    
-
-    <!--Footer-->
-    <div class="footer" id="footer-id">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <h3>Made with care and love...</h3>
-                    <p>Eco-wears and sports-fit in a line of handcrafted clothing made from eco-friendly materials with a foucs of sustainability and responsible production.</p>
-                </div>
-                <div class="col-3">
-                    <img src="../images/brandlogo.png" />
-                </div>
-            </div>
-        </div>
-        <hr />
-        <p class="copyright">Copyright 2025 - StyleSphere</p>
-    </div>
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="~/js/site.js"></script>
-    <script>
-        
-        const detailsURLTemplate = "@detailsURLTemplate";
-         
-
-        $(document).ready(function () {
-
-            $.getJSON('/Products/GetProducts' , function (products) {
-
-                // console.log("Loaded Products: ", products); Debug
-
-                const $container = $('#products-container');
-
-                for ( let i = 0; i < products.length; i += 4){
-
-                    const $row = $('<div class="row"></div>');
-                    const group =  products.slice(i , i + 4);
-                    
-                    $.each(group , function(index , product) {
-                        let stars='';
-                        for ( let j = 0; j <= 5; j++){
-                            stars += `<i class="fa ${ j <= product.rating ? 'fa-star' : 'fa-star-o'}"></i>`;
-                        }
-
-                        const detailsURL = detailsURLTemplate.replace("__id__" , product.id);
-
-                        const productHTML = `
-                        <div class="col-4 product-item" data-id="${product.id}">
-                            <a href="${detailsURL}">
-                                <img src = "${product.image}" alt="${product.name}" />
-                                <h4> ${ product.name } </h4>
-                                <div class = "rating"> ${ stars } </div>
-                                <p> ${ product.price }</p>
-                                ${ product.link ? `</a>` : ''}
-                            <a>
-                        </div>
-                        `;
-                        $row.append(productHTML);
-                    });
-
-                $container.append($row);
-                }
-            });
-
-            $('#products-container').on('click' , '.product-items' , function(){
-                const id = $(this).data('id');
-                window.location.href = '@Url.Action("Details" , "Products" , new { id = "__id__" })'.replace("__id__" , id);
-            });
-
+            $container.append($row);
+            }
         });
 
-    </script>
+        $('#products-container').on('click' , '.product-items' , function(){
+            const id = $(this).data('id');
+            window.location.href = '@Url.Action("Details" , "Products" , new { id = "__id__" })'.replace("__id__" , id);
+        });
 
-</body>
-</html>
+    });
+
+</script>
+
+

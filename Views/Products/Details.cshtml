@@ -1,182 +1,108 @@
-﻿@{
-    Layout = null; // No layout for this view
+﻿@model Products
+@{
+Layout = "_Layout";
+ViewData["Title"] = "Details";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        @@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    </style>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>All Products-StyleSphere</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
+<!--Single Product Details-->
+<div class="small-container single-product" id="product-details-container"></div>
 
-<body>
-    <!--Preloader-->
-    <div id="preloader">
-        <!--<div class="tear-text" data-text="Loading...">Loading...</div>-->
-    </div>
-
-    <div class="details-header">
-        <div class="container">
-
-            <div class="navbar">
-                <a asp-area="" asp-controller="Home" asp-action="Index"><h1>StyleSphere</h1></a>
-                <nav class="nav-link">
-                    <ul id="menu-items">
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Products" asp-action="Index">Products</a></li>
-                        <li><a asp-controller="About" asp-action="Index">About</a></li>
-                        <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
-                        <li><a asp-controller="Account" asp-action="Index">Account</a></li>
-                    </ul>
-                </nav>
-                <a asp-controller="Cart" asp-action="Index"><img src="~/images/cart.png" width="30px" height="30px" class="cart"/></a>
-                <img src="~/images/menu.png" class="menu-icon" onclick="menuToggle()"/>
-            </div>
-
-            @* <div class="hero">
-                <div class="row">
-                    <div class="col-2">
-                        <div class="twrap">
-                            <h1 id="typewriter"></h1>
-                            <br /><br /><br />
-                            <p>Explore the best styles curated for you!</p>
-                            <br />
-                        </div>
-                    </div>
-                    <div class="col-2 img">
-                        <img src="../images/base.png" alt="baseimg" />
-                    </div>
-                </div>
-            </div> *@
-
-        </div>
-    </div>
-
-    <!--Single Product Details-->
-    <div class="small-container single-product" id="product-details-container"></div>
-  
+@Model.id;
 
 
-    <!--Footer-->
-    <div class="footer" id="footer-id">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <h3>Made with care and love...</h3>
-                    <p>Eco-wears and sports-fit in a line of handcrafted clothing made from eco-friendly materials with a foucs of sustainability and responsible production.</p>
-                </div>
-                <div class="col-3">
-                    <img src="~/images/brandlogo.png" />
-                </div>
-            </div>
-        </div>
-        <hr />
-        <p class="copyright">Copyright 2025 - SytleSphere</p>
-    </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/site.js"></script>
 
+<script>
+    $(document).ready(function () {
+        // Function to extract product ID from URL
+        function getProductIdFromUrl() {
+            const segments = window.location.pathname.split('/');
+            return parseInt(segments[segments.length - 1]); // Get last part of URL
+        }
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="~/js/site.js"></script>
+        const productId = getProductIdFromUrl();
 
-    <script>
-        $(document).ready(function () {
-            // Function to extract product ID from URL
-            function getProductIdFromUrl() {
-                const segments = window.location.pathname.split('/');
-                return parseInt(segments[segments.length - 1]); // Get last part of URL
+        // Fetch all products and find the one with matching ID
+        $.getJSON('/Products/GetProducts', function (products) {
+            console.log(products);
+            const product = products.find(p => p.id === productId);
+
+            if (!product) {
+                console.error("Product not found");
+                return;
             }
 
-            const productId = getProductIdFromUrl();
+            // console.log(product.image);
 
-            // Fetch all products and find the one with matching ID
-            $.getJSON('/Products/GetProducts', function (products) {
-                console.log(products);
-                const product = products.find(p => p.id === productId);
+            // Generate dynamic star ratings
+            let stars = '';
+            for (let j = 1; j <= 5; j++) {
+                stars += `<i class="fa ${j <= product.rating ? 'fa-star' : 'fa-star-o'}"></i>`;
+            }
 
-                if (!product) {
-                    console.error("Product not found");
-                    return;
-                }
+            const $row = $('<div class="row"></div>');
 
-                // console.log(product.image);
+            const leftCol = $(`
+                <div class="col-2">
+                    <img src="/${product.image}" width="100%" id="product-image" />
+                </div>
+            `);
 
-                // Generate dynamic star ratings
-                let stars = '';
-                for (let j = 1; j <= 5; j++) {
-                    stars += `<i class="fa ${j <= product.rating ? 'fa-star' : 'fa-star-o'}"></i>`;
-                }
+            const rightCol = $(`
+                <div class="col-2">
+                    <h1>${product.name}</h1>
+                    <h4>${product.price}</h4>
+                    <div class="rating">${stars}</div>
+                    <select>
+                        <option>Select Size</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                    </select>
+                    <input type="number" value="1" />
+                    <button class="btn">Add to Cart</button>
+                    <h3>Product Details</h3>
+                    <p>This is a ${product.name.toLowerCase()} made from high-quality material, designed for style and comfort.</p>
+                </div>
+            `);
 
-                const $row = $('<div class="row"></div>');
+            $row.append(leftCol).append(rightCol);
+            $('#product-details-container').append($row);
 
-                const leftCol = $(`
-                    <div class="col-2">
-                        <img src="/${product.image}" width="100%" id="product-image" />
-                    </div>
-                `);
+            rightCol.find('.btn').on('click' , function () {
+            const quantity = parseInt(rightCol.find('input[type="number"]').val());
+            const size = rightCol.find('select').val();
 
-                const rightCol = $(`
-                    <div class="col-2">
-                        <h1>${product.name}</h1>
-                        <h4>${product.price}</h4>
-                        <div class="rating">${stars}</div>
-                        <select>
-                            <option>Select Size</option>
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
-                        <input type="number" value="1" />
-                        <button class="btn">Add to Cart</button>
-                        <h3>Product Details</h3>
-                        <p>This is a ${product.name.toLowerCase()} made from high-quality material, designed for style and comfort.</p>
-                    </div>
-                `);
+            if ( size === "Select Size" ){
+                alert("Please select a size");
+                return;
+            }
 
-                $row.append(leftCol).append(rightCol);
-                $('#product-details-container').append($row);
+            let cart = JSON.parse(sessionStorage.getItem("cartItems")) || [];
+            console.log("Cart before adding item: ", cart);
+            const existingIndex  = cart.findIndex( item => item.id === product.id && item.size === size);
+            console.log("Exisiting Index: ",existingIndex);
+            if ( existingIndex != -1 ) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.buyimage,
+                    size: size,
+                    quantity: quantity
+                });
+            }
 
-                rightCol.find('.btn').on('click' , function () {
-                const quantity = parseInt(rightCol.find('input[type="number"]').val());
-                const size = rightCol.find('select').val();
-
-                if ( size === "Select Size" ){
-                    alert("Please select a size");
-                    return;
-                }
-
-                let cart = JSON.parse(sessionStorage.getItem("cartItems")) || [];
-                console.log("Cart before adding item: ", cart);
-                const existingIndex  = cart.findIndex( item => item.id === product.id && item.size === size);
-                console.log("Exisiting Index: ",existingIndex);
-                if ( existingIndex != -1 ) {
-                    cart[existingIndex].quantity += quantity;
-                } else {
-                    cart.push({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.buyimage,
-                        size: size,
-                        quantity: quantity
-                    });
-                }
-
-                sessionStorage.setItem("cartItems", JSON.stringify(cart));
-                alert("product added to cart!!!");
-            });
-
-            });
+            sessionStorage.setItem("cartItems", JSON.stringify(cart));
+            alert("product added to cart!!!");
         });
-    </script>
+
+        });
+    });
+</script>
 
 
-
-</body>
-</html>

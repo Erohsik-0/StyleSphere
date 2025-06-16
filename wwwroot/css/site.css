@@ -463,9 +463,9 @@ select:focus{
     background: white;
 }
 
-#account-header {
+/*#account-header {
     background: white;
-}
+}*/
 
 #cart-header{
     background: white;
@@ -538,7 +538,7 @@ td:last-child , th:last-child{
 /*account-apge*/
 .account-page{
     padding:50px 0;
-    background: radial-gradient(#fff,#ffd6d6);
+    margin:0;
 }
 
 .form-container{
