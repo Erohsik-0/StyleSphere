@@ -25,16 +25,19 @@
     <div class="header" id="cart-header">
         <div class="container">
             <div class="navbar">
+                
+                <a asp-area="" asp-controller="Home" asp-action="Index"><h1>StyleSphere</h1></a>
+
                 <nav class="nav-link">
                     <ul id="menu-items">
-                        <li><a href="/Home">Home</a></li>
-                        <li><a href="/Products">Products</a></li>
-                        <li><a href="/About">About</a></li>
-                        <li><a href="/Contact">Contact</a></li>
-                        <li><a href="/Account">Account</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
+                        <li><a asp-area="" asp-controller="About" asp-action="Index">About</a></li>
+                        <li><a asp-area="" asp-controller="Contact" asp-action="Index">Contact</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Index">Account</a></li>
                     </ul>
                 </nav>
-                <a href="/Cart"><img src="~/images/cart.png" width="30px" height="30px" class="cart" /></a>
+                <a asp-area="" asp-controller="Cart" asp-action="Index"><img src="~/images/cart.png" width="30px" height="30px" class="cart"/></a>
             </div>
         </div>
     </div>

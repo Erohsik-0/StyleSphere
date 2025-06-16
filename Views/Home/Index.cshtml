@@ -1,205 +1,244 @@
 ﻿@{
-    Layout = null; // No layout for this view
+    Layout = "_Layout";
+    ViewData["Title"] = "Home";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        @@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    </style>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StyleSphere</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
 
-<body>
-    <!--Preloader-->
-    <div id="preloader">
-        <!--<div class="tear-text" data-text="Loading...">Loading...</div>-->
-    </div>
 
-    <div class="header">
-        <div class="container">
-
-            <div class="navbar">
-
-                <h1>StyleSphere</h1>
-
-                <nav class="nav-link">
-                    <ul id="menu-items">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="Products">Products</a></li>
-                        <li><a href="About">About</a></li>
-                        <li><a href="Contact">Contact</a></li>
-                        <li><a href="Account">Account</a></li>
-                    </ul>
-                </nav>
-                <a href="Cart"><img src="../images/cart.png" width="30px" height="30px" class="cart"/></a>
-                <img src="~/images/menu.png" class="menu-icon" onclick="menuToggle()"/>
-            </div>
-        </div>
-
-        <div class="hero">
-            <div class="row">
-                <div class="col-2">
-                    <div class="twrap">
-                        <h1 id="typewriter"></h1>
-                        <br /><br /><br />
-                        <p >Explore the best styles curated for you!</p>
-                        <a href="Products" class="btn"> Explore Now &#8594;</a>
-                    </div>
-                </div>
-                <div class="col-2 img">
-                    <img src="../images/base.png" alt="baseimg" />
+    <div class="hero">
+        <div class="row">
+            <div class="col-2">
+                <div class="twrap">
+                    <h1 id="typewriter"></h1>
+                    <br /><br /><br />
+                    <p >Explore the best styles curated for you!</p>
+                    <a asp-controller="Products" asp-action="Index" class="btn"> Explore Now &#8594;</a>
                 </div>
             </div>
-        </div>  
-    </div>
-
-
-    @* SUbscribe Modal *@
-    <div class="modal" id="subscribeModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h2>Subscribe Today!</h2>
-            <p>Be the first to experience the collection.</p>
-            <input type="text" placeholder="First Name" id="firstName"/>
-            <input type="email" placeholder="Email" id="email"/>
-            <button onclick="submitForm()">Submit</button>
-            <small>Subscribe for exclusive launch updates, sneak peeks, and insights to our sustainable journey.</small>
-        </div>
-    </div>
-
-
-    <!--Categories-->
-    <div class="categories">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <img src="../images/category-1.jpg" />
-                </div>
-                <div class="col-3">
-                    <img src="../images/category-2.jpg" />
-                </div>
-                <div class="col-3">
-                    <img src="../images/category-3.jpg" />
-                </div>
+            <div class="col-2 img">
+                <img src="../images/base.png" alt="baseimg" />
             </div>
         </div>
-    </div>
+    </div>  
 
-    <!--Products-->
+
+
+@* Subscribe Modal *@
+<div class="modal" id="subscribeModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>Subscribe Today!</h2>
+        <p>Be the first to experience the collection.</p>
+        <input type="text" placeholder="First Name" id="firstName"/>
+        <input type="email" placeholder="Email" id="email"/>
+        <button onclick="submitForm()">Submit</button>
+        <small>Subscribe for exclusive launch updates, sneak peeks, and insights to our sustainable journey.</small>
+    </div>
+</div>
+
+
+<!--Categories-->
+<div class="categories">
     <div class="small-container">
-        <h2 class="title">Featured Products</h2>
         <div class="row">
-            <div class="col-4">
-                <img src="../images/product-1.jpg" />
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
+            <div class="col-3">
+                <img src="../images/category-1.jpg" />
             </div>
-            <div class="col-4">
-                <img src="../images/product-2.jpg" />
-                <h4>Black Sports Shoe</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
+            <div class="col-3">
+                <img src="../images/category-2.jpg" />
             </div>
-            <div class="col-4">
-                <img src="../images/product-3.jpg" />
-                <h4>Grey Track Pant</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
-            </div>
-            <div class="col-4">
-                <img src="../images/product-4.jpg" />
-                <h4>Navy-Blue Polo T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
+            <div class="col-3">
+                <img src="../images/category-3.jpg" />
             </div>
         </div>
+    </div>
+</div>
 
-        <h2 class="title">Latest Products</h2>
+<!--Products-->
+<div class="small-container">
+    <h2 class="title">Featured Products</h2>
+    <div class="row">
+        <div class="col-4">
+            <img src="../images/product-1.jpg" />
+            <h4>Red Printed T-Shirt</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-2.jpg" />
+            <h4>Black Sports Shoe</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-3.jpg" />
+            <h4>Grey Track Pant</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-4.jpg" />
+            <h4>Navy-Blue Polo T-Shirt</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+    </div>
 
+    <h2 class="title">Latest Products</h2>
+
+    <div class="row">
+        <div class="col-4">
+            <img src="../images/product-5.jpg" />
+            <h4>Grey Sneakers Men</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-6.jpg" />
+            <h4>Printed Black T-Shirt</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-7.jpg" />
+            <h4>Triple Sock Set</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-8.jpg" />
+            <h4>Black Wrist Watch-Fastrack</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <img src="../images/product-9.jpg" />
+            <h4>Black Leather Watch</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-10.jpg" />
+            <h4>Black-Red Sports Shoes</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-11.jpg" />
+            <h4>Grey Walking Shoes</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+        <div class="col-4">
+            <img src="../images/product-12.jpg" />
+            <h4>Black Track Pant</h4>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>₹500</p>
+        </div>
+    </div>
+</div>
+
+<!--Offer-->
+<div class="offer">
+    <div class="small-container">
         <div class="row">
-            <div class="col-4">
-                <img src="../images/product-5.jpg" />
-                <h4>Grey Sneakers Men</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
+            <div class="col-2">
+                <img src="../images/exclusive.png" class="offer-img" />
             </div>
-            <div class="col-4">
-                <img src="../images/product-6.jpg" />
-                <h4>Printed Black T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
-            </div>
-            <div class="col-4">
-                <img src="../images/product-7.jpg" />
-                <h4>Triple Sock Set</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
-            </div>
-            <div class="col-4">
-                <img src="../images/product-8.jpg" />
-                <h4>Black Wrist Watch-Fastrack</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
+            <div class="col-2">
+                <p>Exclusively available on StyleSphere</p>
+                <h1>XBand 4</h1>
+                <small>The XBand 4 features 39.9% larger AMOLED color full-touch display with adjustable brightness, so everything is clear as can be.</small>
+                <a href="" class="btn">Buy Now &#8594;</a>
             </div>
         </div>
+    </div>
+</div>
+
+<!--Testimonial-->
+<div class="testimonial">
+    <div class="small-container">
         <div class="row">
-            <div class="col-4">
-                <img src="../images/product-9.jpg" />
-                <h4>Black Leather Watch</h4>
+            <div class="col-3">
+                <i class="fa fa-quote-left"></i>
+                <p>
+                    StyleSphere delivers exactly what it promises – style, quality, and comfort.
+                    The fabric feels premium, and the designs are always on-trend.
+                    Every outfit gets me endless compliments!
+                </p>
                 <div class="rating">
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
@@ -207,11 +246,19 @@
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star-o"></i>
                 </div>
-                <p>₹500</p>
+                <div class="person">
+                    <img src="../images/user-1.png" />
+                    <h3>Jessy Lane</h3>
+                </div>
+
             </div>
-            <div class="col-4">
-                <img src="../images/product-10.jpg" />
-                <h4>Black-Red Sports Shoes</h4>
+            <div class="col-3">
+                <i class="fa fa-quote-left"></i>
+                <p>
+                    I’ve tried many fashion brands, but StyleSphere truly stands out.
+                    Their clothes fit perfectly and look fantastic both online and offline.
+                    It’s my new go-to for everyday and workwear fashion.
+                </p>
                 <div class="rating">
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
@@ -219,219 +266,112 @@
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star-o"></i>
                 </div>
-                <p>₹500</p>
+                <div class="person">
+                    <img src="../images/user-2.png" />
+                    <h3>Soloman Hunt</h3>
+                </div>
+
             </div>
-            <div class="col-4">
-                <img src="../images/product-11.jpg" />
-                <h4>Grey Walking Shoes</h4>
+            <div class="col-3">
+                <i class="fa fa-quote-left"></i>
+                <p>
+                    StyleSphere’s collections are bold, fresh, and made for the spotlight.
+                    I wore their set to my college fest and turned heads all day.
+                    Can’t wait to grab more looks from their latest drops!
+                </p>
                 <div class="rating">
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
+                    <i class="fa fa-star"></i>
                 </div>
-                <p>₹500</p>
-            </div>
-            <div class="col-4">
-                <img src="../images/product-12.jpg" />
-                <h4>Black Track Pant</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>₹500</p>
-            </div>
-        </div>
-    </div>
-
-    <!--Offer-->
-    <div class="offer">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-2">
-                    <img src="../images/exclusive.png" class="offer-img" />
-                </div>
-                <div class="col-2">
-                    <p>Exclusively available on StyleSphere</p>
-                    <h1>XBand 4</h1>
-                    <small>The XBand 4 features 39.9% larger AMOLED color full-touch display with adjustable brightness, so everything is clear as can be.</small>
-                    <a href="" class="btn">Buy Now &#8594;</a>
+                <div class="person">
+                    <img src="../images/user-3.png" />
+                    <h3>Jessy Lane</h3>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!--Testimonial-->
-    <div class="testimonial">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>
-                        StyleSphere delivers exactly what it promises – style, quality, and comfort.
-                        The fabric feels premium, and the designs are always on-trend.
-                        Every outfit gets me endless compliments!
-                    </p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star-o"></i>
-                    </div>
-                    <div class="person">
-                        <img src="../images/user-1.png" />
-                        <h3>Jessy Lane</h3>
-                    </div>
+<script>
+    let typingHeading = document.getElementById("typewriter");
+    sessionStorage.setItem("subscribeShown" , false);
 
-                </div>
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>
-                        I’ve tried many fashion brands, but StyleSphere truly stands out.
-                        Their clothes fit perfectly and look fantastic both online and offline.
-                        It’s my new go-to for everyday and workwear fashion.
-                    </p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star-o"></i>
-                    </div>
-                    <div class="person">
-                        <img src="../images/user-2.png" />
-                        <h3>Soloman Hunt</h3>
-                    </div>
+    window.addEventListener("load", function () {
 
-                </div>
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>
-                        StyleSphere’s collections are bold, fresh, and made for the spotlight.
-                        I wore their set to my college fest and turned heads all day.
-                        Can’t wait to grab more looks from their latest drops!
-                    </p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </div>
-                    <div class="person">
-                        <img src="../images/user-3.png" />
-                        <h3>Jessy Lane</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        //Typewriter
+        setTimeout(() => {
+            const fullText = "Shop with Us!\nOn StyleSphere";
+            const typingSpeed = 60;
+            let i = 0;
+            let isDeleting = false;
 
-    <!--Footer-->
-    <div class="footer" id="footer-id">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <h3>Made with care and love...</h3>
-                    <p>Eco-wears and sports-fit in a line of handcrafted clothing made from eco-friendly materials with a foucs of sustainability and responsible production.</p>
-                </div>
-                <div class="col-3">
-                    <img src="../images/brandlogo.png" />
-                </div>
-            </div>
-        </div>
-        <hr />
-        <p class="copyright">Copyright 2025 - StyleSphere</p>
-    </div>
+            function typeWriter() {
 
+                typingHeading.textContent = fullText.substring(0, i);
 
-
-
-    <script>
-        let typingHeading = document.getElementById("typewriter");
-        sessionStorage.setItem("subscribeShown" , false);
-
-        window.addEventListener("load", function () {
-
-            //Typewriter
-            setTimeout(() => {
-                const fullText = "Shop with Us!\nOn StyleSphere";
-                const typingSpeed = 60;
-                let i = 0;
-                let isDeleting = false;
-
-                function typeWriter() {
-
-                    typingHeading.textContent = fullText.substring(0, i);
-
-                    if (!isDeleting) {
-                        if (i < fullText.length) {
-                            i++;
-                            setTimeout(typeWriter, typingSpeed);
-                        } else {
-                            isDeleting = true;
-                            setTimeout(typeWriter, 1500);
-                        }
+                if (!isDeleting) {
+                    if (i < fullText.length) {
+                        i++;
+                        setTimeout(typeWriter, typingSpeed);
                     } else {
-                        if (i > 0) {
-                            i--;
-                            setTimeout(typeWriter, typingSpeed);
-                        } else {
-                            isDeleting = false;
-                            setTimeout(typeWriter, 1000);
-                        }
+                        isDeleting = true;
+                        setTimeout(typeWriter, 1500);
+                    }
+                } else {
+                    if (i > 0) {
+                        i--;
+                        setTimeout(typeWriter, typingSpeed);
+                    } else {
+                        isDeleting = false;
+                        setTimeout(typeWriter, 1000);
                     }
                 }
-
-                typeWriter();
-            }, 2000);
-        });
-
-        
-        //Subscribe Modal for newsletters
-
-        function showModal() {
-            document.getElementById("subscribeModal").style.display = "flex";
-            sessionStorage.setItem("subscribeShown", true);
-        }
-
-        function closeModal() {
-            document.getElementById("subscribeModal").style.display = "none";
-            sessionStorage.setItem("subscribeShown", true);
-        }
-
-        function submitForm() {
-            const name = document.getElementById("firstName").value;
-            const email = document.getElementById("email").value;
-
-            if (name && email) {
-                sessionStorage.setItem("subscriber name", name);
-                sessionStorage.setItem("susbcriber email", email);
-                alert("Thank you for submitting the form");
-                closeModal();
-            } else {
-                alert("Please fill in both the fields.");
             }
 
-        }
+            typeWriter();
+        }, 2000);
+    });
 
-        window.addEventListener("scroll", () => {
-            const shown = sessionStorage.getItem("subscribeShown");
-            if (shown == 'false' && window.scrollY > 1000) {
-                showModal();
-            }
-        });
-
-
-    </script>
-
-    <script src="~/js/site.js"></script>
     
+    //Subscribe Modal for newsletters
 
-</body>
-</html>
+    function showModal() {
+        document.getElementById("subscribeModal").style.display = "flex";
+        sessionStorage.setItem("subscribeShown", true);
+    }
+
+    function closeModal() {
+        document.getElementById("subscribeModal").style.display = "none";
+        sessionStorage.setItem("subscribeShown", true);
+    }
+
+    function submitForm() {
+        const name = document.getElementById("firstName").value;
+        const email = document.getElementById("email").value;
+
+        if (name && email) {
+            sessionStorage.setItem("subscriber name", name);
+            sessionStorage.setItem("susbcriber email", email);
+            alert("Thank you for submitting the form");
+            closeModal();
+        } else {
+            alert("Please fill in both the fields.");
+        }
+
+    }
+
+    window.addEventListener("scroll", () => {
+        const shown = sessionStorage.getItem("subscribeShown");
+        if (shown == 'false' && window.scrollY > 1000) {
+            showModal();
+        }
+    });
+
+
+</script>
+
+<script src="~/js/site.js"></script>
+

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using StyleSphere.Models;
 
 namespace StyleSphere.Controllers
 {

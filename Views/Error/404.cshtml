@@ -1,5 +1,6 @@
 ﻿@{
     Layout = null;
+    var home = Url.Action("Index", "Home");
 }
 
 <!DOCTYPE html>
@@ -153,7 +154,7 @@
 
     <script>
         function goHome() {
-            window.location.href = "/Home";
+            window.location.href = "@home";
         }
 
         const h1El = document.getElementById("typingHeading");

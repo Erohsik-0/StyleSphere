@@ -1,5 +1,6 @@
 ﻿@{
     Layout = null; // No layout for this view
+    var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__" });
 }
 
 <!DOCTYPE html>
@@ -25,17 +26,17 @@
     <div class="header" id="products-header">
         <div class="container">
             <div class="navbar">
-                <h1>StyleSphere</h1>
+                <a asp-area="" asp-controller="Home" asp-action="Index"></a><h1>StyleSphere</h1>
                 <nav class="nav-link">
                     <ul id="menu-items">
-                        <li><a href="Home">Home</a></li>
-                        <li><a href="#">Products</a></li>
-                        <li><a href="About">About</a></li>
-                        <li><a href="Contact">Contact</a></li>
-                        <li><a href="Account">Account</a></li>
+                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-controller="Products" asp-action="Index">Products</a></li>
+                        <li><a asp-controller="About" asp-action="Index">About</a></li>
+                        <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
+                        <li><a asp-controller="Account" asp-action="Index">Account</a></li>
                     </ul>
                 </nav>
-                <a href="Cart"><img src="../images/cart.png" width="30px" height="30px" class="cart" /></a>
+                <a asp-controller="Cart" asp-action="Index"><img src="../images/cart.png" width="30px" height="30px" class="cart" /></a>
                 <img src="~/images/menu.png" class="menu-icon" onclick="menuToggle()" />
             </div>
 
@@ -101,14 +102,17 @@
             </div>
         </div>
         <hr />
-        <p class="copyright">Copyright 2025 - SytleSphere</p>
+        <p class="copyright">Copyright 2025 - StyleSphere</p>
     </div>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/site.js"></script>
     <script>
-            
+        
+        const detailsURLTemplate = "@detailsURLTemplate";
+         
+
         $(document).ready(function () {
 
             $.getJSON('/Products/GetProducts' , function (products) {
@@ -128,7 +132,7 @@
                             stars += `<i class="fa ${ j <= product.rating ? 'fa-star' : 'fa-star-o'}"></i>`;
                         }
 
-                        const detailsURL = `Products/Details/${product.id}`;
+                        const detailsURL = detailsURLTemplate.replace("__id__" , product.id);
 
                         const productHTML = `
                         <div class="col-4 product-item" data-id="${product.id}">
@@ -150,7 +154,7 @@
 
             $('#products-container').on('click' , '.product-items' , function(){
                 const id = $(this).data('id');
-                window.location.href = `/ProductDetails/${id}`;
+                window.location.href = '@Url.Action("Details" , "Products" , new { id = "__id__" })'.replace("__id__" , id);
             });
 
         });
