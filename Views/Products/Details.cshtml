@@ -24,49 +24,46 @@ ViewData["Title"] = "Product Details";
 
 
 @* Modal *@
-
-<form>
     
-    <div class="row">
-        <div class="col-2">
-            <img src="@Model.image" width=100% id="product-image" />
-        </div>
-        <div class="col-2">
-            <h1>@Model.name</h1>
-            <h4>₹@Model.price.00</h4>
-            <div class="rating">
-                @for (int j = 1; j <= 5; j++)
-                {
-                    if (j <= @Model.rating)
-                    {
-                        <i class="fa fa-star"></i>
-                    }
-                    else
-                    {
-                        <i class="fa fa-star-o"></i>
-                    }
-                }
-            </div>
-            <select>
-                <option>Select Size</option>
-                <option>S</option>
-                <option>M</option>
-                <option>L</option>
-                <option>XL</option>
-            </select>
-            <form asp-action="AddToCart" asp-controller="Cart" method="post">
-                <input type="hidden" name="id" value="@Model.id"/> 
-                <input type="hidden" name="name" value="@Model.name"/> 
-                <input type="hidden" name="price" value="@Model.price"/> 
-                <input type="hidden" name="image" value="@Model.buyimage"/> 
-                <input type="number" name="quantity" value="1" min="1"/> 
-                <button class="btn" type="submit">Add to Cart</button>
-            </form>
-            <h3>Product Details</h3>
-            <p>This is a @Model.name.ToLower() made from high-quality material, designed for style and comfort.</p>
-        </div>
+<div class="row">
+    <div class="col-2">
+        <img src="@Model.image" width=100% id="product-image" />
     </div>
-</form>
+    <div class="col-2">
+        <h1>@Model.name</h1>
+        <h4>₹@Model.price.00</h4>
+        <div class="rating">
+            @for (int j = 1; j <= 5; j++)
+            {
+                if (j <= @Model.rating)
+                {
+                    <i class="fa fa-star"></i>
+                }
+                else
+                {
+                    <i class="fa fa-star-o"></i>
+                }
+            }
+        </div>
+        <select>
+            <option>Select Size</option>
+            <option>S</option>
+            <option>M</option>
+            <option>L</option>
+            <option>XL</option>
+        </select>
+        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+            <input type="hidden" name="id" value="@Model.id"/> 
+            <input type="hidden" name="name" value="@Model.name"/> 
+            <input type="hidden" name="price" value="@Model.price"/> 
+            <input type="hidden" name="image" value="@Model.buyimage"/> 
+            <input type="number" name="quantity" value="1" min="1"/> 
+            <button class="btn" type="submit">Add to Cart</button>
+        </form>
+        <h3>Product Details</h3>
+        <p>This is a @Model.name.ToLower() made from high-quality material, designed for style and comfort.</p>
+    </div>
+</div>
 
 
 

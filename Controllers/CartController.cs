@@ -5,8 +5,10 @@ using System.Text.Json;
 
 namespace StyleSphere.Controllers
 {
+
     public class CartController : Controller
     {
+
         private const string CartSessionKey = "CartItems";
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<CartController> _logger;
@@ -40,6 +42,7 @@ namespace StyleSphere.Controllers
                             size = item.size,
                             quantity = item.quantity
                         });
+                        Console.WriteLine("cart item added");
                     }
                 }
 
@@ -67,7 +70,8 @@ namespace StyleSphere.Controllers
                     cart.Add(new CartItem { id = id, quantity = quantity, size = size });
 
                 HttpContext.Session.SetObject(CartSessionKey, cart);
-                _logger.LogInformation("Added item ID {Id} to cart. Total items: {Count}", id, cart.Count);
+                //_logger.LogInformation("Added item ID {Id} to cart. Total items: {Count}", id, cart.Count);
+                //return Content("Cart item added");
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
