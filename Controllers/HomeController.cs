@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Mvc;
 using StyleSphere.Models;
 
@@ -16,23 +15,42 @@ namespace StyleSphere.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        private IActionResult File(string v)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                // Any logic here can go inside this try block if needed
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading Home/Index");
+                return RedirectToAction("Error");
+            }
         }
 
         public IActionResult Privacy()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading Home/Privacy");
+                return RedirectToAction("Error");
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var requestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
+            _logger.LogWarning("Rendering error page. Request ID: {RequestId}", requestId);
+
+            return View(new ErrorViewModel
+            {
+                RequestId = requestId
+            });
         }
     }
 }

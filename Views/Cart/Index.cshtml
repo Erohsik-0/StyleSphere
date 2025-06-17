@@ -1,95 +1,87 @@
-﻿@{
-    ViewData["Title"] = "Cart";
-    Layout = "_Layout"; 
+﻿@model List<StyleSphere.Models.CartViewModel>
 
+@{
+    ViewData["Title"] = "Cart";
+    Layout = "_Layout";
 }
 
-
-@* Cart Items Details *@
 <div class="small-container" id="cart-page">
-
     <table>
-        
-        @*
         <tr>
             <th>Product</th>
             <th>Quantity</th>
             <th>Subtotal</th>
-        </tr> *@
-        @* <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="~/images/buy-1.jpg"/>
-                    <div>
-                        <p>Red Printed T-Shirt</p>
-                        <small>Price: ₹500.00</small>
-                        <br />
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"/></td>
-            <td>₹500.00</td>
         </tr>
-        <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="~/images/buy-2.jpg"/>
-                    <div>
-                        <p>Black Sports Shoe</p>
-                        <small>Price: ₹500.00</small>
-                        <br />
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"/></td>
-            <td>₹500.00</td>
-        </tr>
-        <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="~/images/buy-3.jpg"/>
-                    <div>
-                        <p>Grey Track Pant</p>
-                        <small>Price: ₹500.00</small>
-                        <br />
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"/></td>
-            <td>₹500.00</td>
-        </tr> *@
+
+        @if (Model != null && Model.Count > 0)
+        {
+            decimal total = 0;
+
+            foreach (var item in Model)
+            {
+
+                var subtotal = item.price * item.quantity;
+                total += subtotal;
+                <tr>
+                    <td>
+                        <div class="cart-info">
+                            <img src="@item.buyimage" />
+                            <div>
+                                <p>@item.name</p>
+                                <small>Price: ₹@item.price.00</small><br />
+                                <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-id="@item.id">Remove</a>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <form asp-action="UpdateQuantity" asp-controller="Cart" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.id" />
+                            <input type="number" name="quantity" value="@item.quantity" min="1" style="width: 60px;" />
+                            <button type="submit" class="btn btn-sm">Update</button>
+                        </form>
+                    </td>
+                    <td>₹@subtotal.00</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td style="justify-content:cetner;">Your cart is empty.</td>
+            </tr>
+        }
     </table>
 
-    <div class="total-price">
+    @if (Model != null && Model.Count > 0)
+    {
+        decimal total = Model.Sum(i => i.price * i.quantity);
+        decimal tax = total * 0.2M;
+        decimal grandTotal = total + tax;
 
-        <table>
-            @* <tr>
-                <td>Subtotal</td>
-                <td>₹1500.00</td>
-            </tr>
-            <tr>
-                <td>Tax</td>
-                <td>₹300.00</td>
-            </tr>
-            <tr>
-                <td>Total</td>
-                <td>₹1800.00</td>
-            </tr> *@
-        </table>
-    </div>
-
+        <div class="total-price">
+            <table>
+                <tr>
+                    <td>Subtotal</td>
+                    <td>₹@total.00</td>
+                </tr>
+                <tr>
+                    <td>Tax</td>
+                    <td>₹@tax.00</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>₹@grandTotal.00</td>
+                </tr>
+            </table>
+        </div>
+    }
 </div>
 
 
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+@* <script src="~/js/site.js"></script> *@
 
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="~/js/site.js"></script>
-
-<script>
+@* <script>
 
     $(document).ready( function() {
         let cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
@@ -160,4 +152,4 @@
         });
     });
 
-</script>
+</script> *@

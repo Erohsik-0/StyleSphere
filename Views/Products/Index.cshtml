@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<StyleSphere.Models.Products>
+@{
 ViewData["Title"] = "Products";
 Layout = "_Layout"; 
 var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__" });
@@ -19,7 +20,40 @@ var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__"
     </div>
 
     <div id="products-container">
-    
+        
+        @{
+            var products = Model.ToList();
+            for (int i = 0; i < products.Count; i += 4)
+            {
+                <div class="row">
+                    @foreach (var product in products.Skip(i).Take(4))
+                    {
+                        <div class="col-4 product-item" data-id="@product.id">
+                            <a href="@Url.Action("Details", "Products", new { id = product.id })">
+                                <img src="@product.image" alt="@product.name"/>
+                                <h4>@product.name</h4>
+                                <div class="rating">
+                                    @{
+                                        for (int j = 1; j <= 5; j++)
+                                        {
+                                            if (j <= product.rating)
+                                            {
+                                                <i class="fa fa-star"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-star-o"></i>
+                                            }
+                                        }
+                                    }
+                                </div>
+                                <p>₹@product.price.00</p>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        }
 
         <div class="page-btn">
             <span>1</span>
@@ -36,12 +70,11 @@ var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__"
 
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="~/js/site.js"></script>
-<script>
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+
+@* <script>
     
     const detailsURLTemplate = "@detailsURLTemplate";
-     
 
     $(document).ready(function () {
 
@@ -90,5 +123,5 @@ var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__"
     });
 
 </script>
-
+ *@
 

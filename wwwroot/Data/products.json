@@ -3,34 +3,34 @@
     "id": 1,
     "name": "Red Printed T-Shirt",
     "price": 500,
-    "image": "images/product-1.jpg",
+    "image": "/images/product-1.jpg",
     "rating": 4,
     "link": "Product/Details",
-    "buyimage":  "images/buy-1.jpg"
+    "buyimage":  "/images/buy-1.jpg"
   },
   {
     "id": 2,
     "name": "Black Sports Shoe",
     "price": 500,
-    "image": "images/product-2.jpg",
-    "rating": 4,
+    "image": "/images/product-2.jpg",
+    "rating": 5,
     "link": "Product/Details",
-    "buyimage": "images/buy-2.jpg"
+    "buyimage": "/images/buy-2.jpg"
   },
   {
     "id": 3,
     "name": "Grey Track Pant",
     "price": 500,
-    "image": "images/product-3.jpg",
-    "rating": 4,
+    "image": "/images/product-3.jpg",
+    "rating": 3,
     "link": "Product/Details",
-    "buyimage":  "images/buy-3.jpg"
+    "buyimage":  "/images/buy-3.jpg"
   },
   {
     "id": 4,
     "name": "Navy-Blue Polo T-Shirt",
     "price": 500,
-    "image": "images/product-4.jpg",
+    "image": "/images/product-4.jpg",
     "rating": 4
   },
   {
@@ -45,7 +45,7 @@
     "name": "Printed Black T-Shirt",
     "price": 500,
     "image": "images/product-6.jpg",
-    "rating": 4
+    "rating": 5
   },
   {
     "id": 7,
