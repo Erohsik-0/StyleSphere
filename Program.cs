@@ -4,17 +4,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 //For implementing the same functionality as SessionStorage using C#
-builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddSession(options =>
     {
-        options.Cookie.Name = ".AspNetCore.Session";
         options.IdleTimeout = TimeSpan.FromMinutes(3);
         options.Cookie.HttpOnly = true;
         options.Cookie.IsEssential = true; // Make the session cookie essential 
     }
 );
-
 
 
 var app = builder.Build();
