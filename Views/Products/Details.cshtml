@@ -1,4 +1,4 @@
-﻿@model StyleSphere.Models.Products
+﻿@model StyleSphere.Models.ProductEntity.Product
 
 @{
 Layout = "_Layout";
@@ -25,7 +25,7 @@ ViewData["Title"] = "Product Details";
 
 @* Modal *@
 
-<form>
+
     
     <div class="row">
         <div class="col-2">
@@ -47,26 +47,26 @@ ViewData["Title"] = "Product Details";
                     }
                 }
             </div>
-            <select>
+            <div>
+
+            </div>
+            <select name="size" >
                 <option>Select Size</option>
                 <option>S</option>
                 <option>M</option>
                 <option>L</option>
                 <option>XL</option>
             </select>
-            <form asp-action="AddToCart" asp-controller="Cart" method="post">
-                <input type="hidden" name="id" value="@Model.id"/> 
-                <input type="hidden" name="name" value="@Model.name"/> 
-                <input type="hidden" name="price" value="@Model.price"/> 
-                <input type="hidden" name="image" value="@Model.buyimage"/> 
-                <input type="number" name="quantity" value="1" min="1"/> 
+            <form asp-action="AddToCart" asp-controller="Products" method="post"> 
+                <input type="hidden" name="id" value="@Model.id" />
+               
                 <button class="btn" type="submit">Add to Cart</button>
             </form>
             <h3>Product Details</h3>
-            <p>This is a @Model.name.ToLower() made from high-quality material, designed for style and comfort.</p>
+            <p>@Model.description</p>
         </div>
     </div>
-</form>
+
 
 
 

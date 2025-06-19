@@ -1,16 +1,37 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using StyleSphere.Data;
+using StyleSphere.Models.User;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//For implementing the same functionality as SessionStorage using C#
-builder.Services.AddSession(options =>
-    {
-        options.IdleTimeout = TimeSpan.FromMinutes(3);
-        options.Cookie.HttpOnly = true;
-        options.Cookie.IsEssential = true; // Make the session cookie essential 
-    }
-);
+builder.Services.AddSession();
+
+// Adding Session support
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer("Server=.;Database=stylesphere_db;Trusted_Connection=True;TrustServerCertificate=True;");
+});
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireDigit = true;
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.SignIn.RequireConfirmedEmail = false;
+
+}).AddEntityFrameworkStores<AppDbContext>()
+  .AddDefaultTokenProviders();
+
 
 
 var app = builder.Build();

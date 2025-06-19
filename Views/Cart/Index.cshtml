@@ -1,4 +1,4 @@
-﻿@model List<StyleSphere.Models.CartViewModel>
+﻿@model List<StyleSphere.Models.ProductEntity.Product>
 
 @{
     ViewData["Title"] = "Cart";
@@ -9,18 +9,18 @@
     <table>
         <tr>
             <th>Product</th>
-            <th>Quantity</th>
+            @* <th>Quantity</th> *@
             <th>Subtotal</th>
         </tr>
 
-        @if (Model != null && Model.Count > 0)
+        @if (Model != null && Model.Any(p => p.isAddedToCart))
         {
             decimal total = 0;
 
-            foreach (var item in Model)
+            foreach (var item in Model.Where(p => p.isAddedToCart))
             {
 
-                var subtotal = item.price * item.quantity;
+                var subtotal = item.price;
                 total += subtotal;
                 <tr>
                     <td>
@@ -29,17 +29,11 @@
                             <div>
                                 <p>@item.name</p>
                                 <small>Price: ₹@item.price.00</small><br />
-                                <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-id="@item.id">Remove</a>
+                                <a asp-controller="Products" asp-action="RemoveFromCart" asp-route-id="@item.id">Remove</a>
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <form asp-action="UpdateQuantity" asp-controller="Cart" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@item.id" />
-                            <input type="number" name="quantity" value="@item.quantity" min="1" style="width: 60px;" />
-                            <button type="submit" class="btn btn-sm">Update</button>
-                        </form>
-                    </td>
+                
                     <td>₹@subtotal.00</td>
                 </tr>
             }
@@ -47,15 +41,15 @@
         else
         {
             <tr>
-                <td style="justify-content:cetner;">Your cart is empty.</td>
+                <td style="justify-content:center;">Your cart is empty.</td>
             </tr>
         }
     </table>
 
-    @if (Model != null && Model.Count > 0)
+    @if (Model != null && Model.Any(p => p.isAddedToCart))
     {
-        decimal total = Model.Sum(i => i.price * i.quantity);
-        decimal tax = total * 0.2M;
+        decimal total = Model.Where(p => p.isAddedToCart).Sum(p => p.price);
+        decimal tax = total * 0.4M;
         decimal grandTotal = total + tax;
 
         <div class="total-price">

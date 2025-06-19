@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StyleSphere.Models;
-using System.Text.Json;
+using StyleSphere.Data;
+using StyleSphere.Models.ProductEntity;
 
 namespace StyleSphere.Controllers
 {
@@ -8,18 +8,20 @@ namespace StyleSphere.Controllers
     {
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<ProductsController> _logger;
+        private readonly AppDbContext _context;
 
-        public ProductsController(IWebHostEnvironment env, ILogger<ProductsController> logger)
+        public ProductsController(IWebHostEnvironment env, ILogger<ProductsController> logger, AppDbContext context)
         {
             _env = env;
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
             try
             {
-                var products = LoadProducts();
+                var products = _context.Products.ToList();
                 if (products == null)
                 {
                     _logger.LogWarning("Product list is null in Index()");
@@ -38,7 +40,7 @@ namespace StyleSphere.Controllers
         {
             try
             {
-                var products = LoadProducts();
+                var products = _context.Products.ToList();
                 if (products == null)
                 {
                     _logger.LogWarning("Product data is null in Details()");
@@ -61,59 +63,54 @@ namespace StyleSphere.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult GetProducts()
+        [HttpPost]
+        public IActionResult AddToCart(int id)
         {
             try
             {
-                var products = LoadProducts();
-                if (products == null)
+                var product = _context.Products.FirstOrDefault(p => p.id == id);
+                if (product == null)
                 {
-                    _logger.LogWarning("Product data not found in GetProducts()");
-                    return NotFound("Products.json not found or is invalid.");
+                    _logger.LogWarning("Product with ID {Id} not found in AddToCart()", id);
+                    return NotFound($"Product with ID {id} not found.");
                 }
 
-                return Json(products);
+                product.isAddedToCart = true;
+                _context.SaveChanges();
+
+                return RedirectToAction("Index" , "Cart");
+                //return Ok($"Product with ID {id} added to cart.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to return product list as JSON");
-                return StatusCode(500, "An error occurred while retrieving products.");
+                _logger.LogError(ex, "Error adding product with ID {Id} to cart", id);
+                return RedirectToAction("Error", "Home");
             }
         }
 
-        private List<Products>? LoadProducts()
+        public IActionResult RemoveFromCart(int id)
         {
             try
             {
-                string jsonPath = Path.Combine(_env.WebRootPath, "Data", "products.json");
-
-                if (!System.IO.File.Exists(jsonPath))
+                var product = _context.Products.FirstOrDefault(p => p.id == id);
+                if (product == null)
                 {
-                    _logger.LogWarning("products.json file not found at path: {Path}", jsonPath);
-                    return null;
+                    _logger.LogWarning("Product with ID {Id} not found in RemoveFromCart()", id);
+                    return NotFound($"Product with ID {id} not found.");
                 }
 
-                string json = System.IO.File.ReadAllText(jsonPath);
-                var products = JsonSerializer.Deserialize<List<Products>>(json);
+                product.isAddedToCart = false;
+                _context.SaveChanges();
 
-                if (products == null)
-                {
-                    _logger.LogWarning("Deserialized product list is null.");
-                }
-
-                return products;
-            }
-            catch (JsonException jsonEx)
-            {
-                _logger.LogError(jsonEx, "JSON deserialization failed for products.json");
-                return null;
+                return RedirectToAction("Index", "Cart");
+                //return Ok($"Product with ID {id} removed from cart.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error reading or parsing products.json");
-                return null;
+                _logger.LogError(ex, "Error removing product with ID {Id} from cart", id);
+                return RedirectToAction("Error", "Home");
             }
         }
+
     }
 }
