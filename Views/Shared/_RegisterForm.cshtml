@@ -1,0 +1,24 @@
+﻿@model StyleSphere.Models.ViewModel.RegisterViewModel
+
+
+<form id="regForm" asp-antiforgery="true">
+    
+    
+    <label asp-for="Name">Name</label>
+    <input asp-for="Name" name="name" />
+    <span asp-validation-for="Name"></span>
+
+
+    <label asp-for="Email">Email</label>
+    <input asp-for="Email" name="Email" />
+    <span asp-validation-for="Email"></span>
+
+
+    <label asp-for="Password">Password</label>
+    <input asp-for="Password" type="password" name="Password" />
+    <span asp-validation-for="Password"></span>
+
+    <button type="submit" class="btn">Register</button>
+
+
+</form>

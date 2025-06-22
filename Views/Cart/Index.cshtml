@@ -28,13 +28,13 @@
                             <img src="@item.buyimage" />
                             <div>
                                 <p>@item.name</p>
-                                <small>Price: ₹@item.price.00</small><br />
+                                <small>Price: ₹@item.price.0</small><br />
                                 <a asp-controller="Products" asp-action="RemoveFromCart" asp-route-id="@item.id">Remove</a>
                             </div>
                         </div>
                     </td>
                 
-                    <td>₹@subtotal.00</td>
+                    <td>₹@subtotal.0</td>
                 </tr>
             }
         }
@@ -56,15 +56,15 @@
             <table>
                 <tr>
                     <td>Subtotal</td>
-                    <td>₹@total.00</td>
+                    <td>₹@total.0</td>
                 </tr>
                 <tr>
                     <td>Tax</td>
-                    <td>₹@tax.00</td>
+                    <td>₹@tax</td>
                 </tr>
                 <tr>
                     <td>Total</td>
-                    <td>₹@grandTotal.00</td>
+                    <td>₹@grandTotal</td>
                 </tr>
             </table>
         </div>

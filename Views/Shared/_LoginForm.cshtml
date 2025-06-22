@@ -1,0 +1,19 @@
+﻿@model StyleSphere.Models.ViewModel.LoginViewModel
+
+<form id="loginForm" asp-antiforgery="true"> 
+    
+    @* for getting email input  *@
+    <label asp-for="Email">Email</label>
+    <input asp-for="Email" name="Email"/>
+    <span asp-validation-for="Email"></span>
+
+    @* for getting password *@
+    <label asp-for="Password">Password</label>
+    <input asp-for="Password" name="Password"/>
+    <span asp-validation-for="Password"></span>
+
+    <button type="submit" class="btn">Login</button>
+</form>
+
+
+

@@ -1,4 +1,7 @@
-﻿@{
+﻿@model StyleSphere.Models.ViewModel.AccountCombinedViewModel
+
+@{
+
     ViewData["Title"] = "Account";
     Layout = "_Layout"; // No layout for this view
 }
@@ -21,33 +24,25 @@
                         <hr id="indicator"/>
                     </div>
                     <div id="loginFormContainer">
-                        <form id="loginForm">
-                            <label for="loginUsername">Username</label>
-                            <input type="text" id="loginUsername" name="loginUsername" />
-                            <label for="loginPassword">Password</label>
-                            <input type="password" id="loginPassword" name="loginPassword"  />
-                            <button type="submit" class="btn">Login</button>
-                            <a href="">Forgot Password</a>
-                        </form>
+                        @Html.Partial("_LoginForm" , Model.Login)
                     </div>
                     
 
                     <div id="regFormContainer">
-                        <form id="regForm">
-                            <label for="regUsername">Username</label>
-                            <input type="text" id="regUsername" name="regUsername"/>
-                            <label for="regEmail">Email</label>
-                            <input type="email" id="regEmail" name="regEmail"/>
-                            <label for="regPassword">Password</label>
-                            <input type="password" id="regPassword" name="regPassword"/>
-                            <button type="submit" class="btn">Login</button>
-                        </form>
+                        @Html.Partial("_RegisterForm" , Model.Register)
                     </div>
+
+                    <div id="accountMsg" style="color:red;margin-top:10px;"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
+@section Scripts 
+{
 
 
 <script>
@@ -78,48 +73,81 @@
             regForm.style.display = "none";
         });
 
-        const switchToLogin = document.getElementById("switchToLogin");
-        if (switchToLogin) {
-            switchToLogin.addEventListener("click", () => {
-                indicator.style.transform = "translateX(0px)";
-                regForm.classList.add("hide");
-                loginForm.classList.remove("hide");
+        
+        //Ajax Login
+        document.getElementById('loginForm').addEventListener('submit' , function(event){
+            event.preventDefault();
+            const data = new FormData(this);
+            fetch('@Url.Action("Login" , "Account")' , {
+                method: 'POST,
+                body: data,
+                headers: {'RequestVerificationToken' : document.querySelector('input[name="_RequestVerificationToken"]').value; }
+            })
+            .then(r => r.json())
+            .then(res => {
+                document.getElementById("accountMsg").textContent = res.message;
+                if(res.success) location.href = res.redirectUrl;
             });
-        }
+        });
 
-    })
+        //Ajax Register
+        document.getElementById('regForm').addEventListener('submit' , function(event) {
+            event.preventDefault();
+            const data = new FormData(this);
+            fetch('@Url.Action("Register" , "Account")' , {
+                method: 'POST',
+                body: data,
+                headers: { 'RequestVerificationToken' : document.querySelector('input[name="_RequestVerificationToken"]').value;}
+            })
+            .then(r => r.json())
+            .then(res => document.getElementById("accountMsg").textContent = res.message);
+            if(res.success) location.href = res.redirectUrl;
+        });
 
-    document.getElementById('loginForm').addEventListener('submit', function (event) {
-        event.preventDefault(); //Prevent default form submission
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword');
-
-        if (username == "test" && password.value == "password") {
-            alert('Login successful');
-        } else {
-            alert('Invalid username or password');
-            password.value = "";
-        }
-    });
 
 
-    document.getElementById('regForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-        const username = document.getElementById('regUsername').value;
-        const email = document.getElementById('regEmail').value;
-        const password = document.getElementById('regPassword');
+    //     const switchToLogin = document.getElementById("switchToLogin");
+    //     if (switchToLogin) {
+    //         switchToLogin.addEventListener("click", () => {
+    //             indicator.style.transform = "translateX(0px)";
+    //             regForm.classList.add("hide");
+    //             loginForm.classList.remove("hide");
+    //         });
+    //     }
 
-        if (username && email && password.value) {
-            alert('Registration successfull!');
-        } else {
-            alert("Please fill all the required fields");
-            password.value = "";
-        }
-    });
+    // })
+
+    // document.getElementById('loginForm').addEventListener('submit', function (event) {
+    //     event.preventDefault(); Prevent default form submission
+    //     const username = document.getElementById('loginUsername').value;
+    //     const password = document.getElementById('loginPassword');
+
+    //     if (username == "test" && password.value == "password") {
+    //         alert('Login successful');
+    //     } else {
+    //         alert('Invalid username or password');
+    //         password.value = "";
+    //     }
+    // });
+
+
+    // document.getElementById('regForm').addEventListener('submit', function (event) {
+    //     event.preventDefault();
+    //     const username = document.getElementById('regUsername').value;
+    //     const email = document.getElementById('regEmail').value;
+    //     const password = document.getElementById('regPassword');
+
+    //     if (username && email && password.value) {
+    //         alert('Registration successfull!');
+    //     } else {
+    //         alert("Please fill all the required fields");
+    //         password.value = "";
+    //     }
+    // });
 
 
 </script>
 
 
 
-
+}
