@@ -9,7 +9,7 @@ namespace StyleSphere.Controllers
 {
     public class AccountController : Controller
     {
-
+            
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
@@ -31,11 +31,11 @@ namespace StyleSphere.Controllers
         //Post: /Account/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model , string returnUrl = null)
         {
             if ( !ModelState.IsValid) 
             {
-                return PartialView("_LoginForm", model);
+                return View(model);
             }
 
             var user =  await _userManager.FindByEmailAsync(model.Email);
@@ -44,11 +44,17 @@ namespace StyleSphere.Controllers
                 var result = await _signInManager.PasswordSignInAsync(user , model.Password , false , false);
                 if (result.Succeeded)
                 {
-                    return Json( new { success = true , message = "Login successful" , redirectUrl = Url.Action("Index" , "Home")});
+                    if( !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    return RedirectToAction("Index", "Home");
                 }
             }
 
-            return Json(new { success = false, message = "Invalid usernmae or password" });
+            ModelState.AddModelError("", "Invalid login attempt!");
+            return View("Index");
+
         }
 
 
@@ -60,24 +66,35 @@ namespace StyleSphere.Controllers
 
             if(!ModelState.IsValid)
             {
-                return PartialView("_RegisterForm" , model);
+                return View("Index");
             }
 
-            var user = new User { Email = model.Email, fullname = model.Name };
+            var user = new User { Email = model.Email, fullname = model.Name, UserName = model.Name };
 
             var result = await _userManager.CreateAsync( user , model.Password);
 
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return Json(new { success = true , message="Registration Successful" , redirectUrl = Url.Action("Index" , "Home")});
+                return RedirectToAction("Index", "Home");
             }
 
-            var errors = string.Join(" " , result.Errors.Select(e => e.Description));
-            return Json(new { success = false , message = errors});
+            //foreach ( var error in result.Errors)
+            //{
+            //    ModelState.AddModelError("" , error.Description);
+            //}
+
+            return View("Index");
 
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
 
     }
 }

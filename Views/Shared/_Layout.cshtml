@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using StyleSphere.Models.User
+@inject Microsoft.AspNetCore.Identity.SignInManager<User> signInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -28,7 +31,20 @@
                         <li><a asp-area="" asp-controller="Account" asp-action="Index">Account</a></li>
                     </ul>
                 </nav>
+                <div id="user-controls">
                 <a asp-area="" asp-controller="Cart" asp-action="Index"><img src="~/images/cart.png" width="30px" height="30px" class="cart" /></a>
+                
+                    @if (signInManager.IsSignedIn(User))
+                    {
+                        <a asp-controller="Account" asp-action="Logout">Logout</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Index">Log In</a>
+
+                    }
+                </div>
+                
                 <img src="~/images/menu.png" class="menu-icon" onclick="menuToggle()" />
                 
             </div>

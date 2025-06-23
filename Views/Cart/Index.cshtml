@@ -1,149 +1,27 @@
-﻿@model List<StyleSphere.Models.ProductEntity.Product>
-
+﻿@model IEnumerable<StyleSphere.Models.CartEntity.CartItem>
 @{
-    ViewData["Title"] = "Cart";
+    ViewData["Title"] = "Your Cart";
     Layout = "_Layout";
 }
-
-<div class="small-container" id="cart-page">
-    <table>
+<h2>Your Cart</h2>
+<table>
+    <thead>
         <tr>
             <th>Product</th>
-            @* <th>Quantity</th> *@
-            <th>Subtotal</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
         </tr>
-
-        @if (Model != null && Model.Any(p => p.isAddedToCart))
-        {
-            decimal total = 0;
-
-            foreach (var item in Model.Where(p => p.isAddedToCart))
-            {
-
-                var subtotal = item.price;
-                total += subtotal;
-                <tr>
-                    <td>
-                        <div class="cart-info">
-                            <img src="@item.buyimage" />
-                            <div>
-                                <p>@item.name</p>
-                                <small>Price: ₹@item.price.0</small><br />
-                                <a asp-controller="Products" asp-action="RemoveFromCart" asp-route-id="@item.id">Remove</a>
-                            </div>
-                        </div>
-                    </td>
-                
-                    <td>₹@subtotal.0</td>
-                </tr>
-            }
-        }
-        else
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
         {
             <tr>
-                <td style="justify-content:center;">Your cart is empty.</td>
+                <td>@item.Product?.name</td>
+                <td>@item.Quantity</td>
+                <td>@item.Product?.price</td>
+                <td>@((item.Product?.price ?? 0) * item.Quantity)</td>
             </tr>
         }
-    </table>
-
-    @if (Model != null && Model.Any(p => p.isAddedToCart))
-    {
-        decimal total = Model.Where(p => p.isAddedToCart).Sum(p => p.price);
-        decimal tax = total * 0.4M;
-        decimal grandTotal = total + tax;
-
-        <div class="total-price">
-            <table>
-                <tr>
-                    <td>Subtotal</td>
-                    <td>₹@total.0</td>
-                </tr>
-                <tr>
-                    <td>Tax</td>
-                    <td>₹@tax</td>
-                </tr>
-                <tr>
-                    <td>Total</td>
-                    <td>₹@grandTotal</td>
-                </tr>
-            </table>
-        </div>
-    }
-</div>
-
-
-@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
-@* <script src="~/js/site.js"></script> *@
-
-@* <script>
-
-    $(document).ready( function() {
-        let cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
-
-        $.getJSON("/Products/GetProducts" , function() {
-            let cartHtml = "";
-            let total = 0;
-
-            cartItems.forEach( item => {
-                let product = cartItems.find(p => p.id === item.id);
-                if ( product ) {
-                    console.log(product);
-                    let subtotal = item.quantity * product.price;
-                    total += subtotal;
-                    cartHtml += `
-                        <tr>
-                            <td>
-                                <div class="cart-info">
-                                    <img src="/${product.image}"/>
-                                    <div>
-                                        <p>${product.name}</p>
-                                        <small>Price: ${product.price}</small><br />
-                                        <a href="#" class="remove-item" data-id="${item.id}">Remove</a>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><input type="number" class="update-quantity" data-id="${item.id}" value="${item.quantity}" /></td>
-                            <td>₹${subtotal}</td>
-                        </tr>
-                    `;
-                }
-
-            });
-
-            //Updating the cart table dynamically
-            $("#cart-page table").html(`
-                <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Subtotal</th>
-                </tr>
-                ${cartHtml}
-            `);
-
-            //Updating the price dynamically
-            $(".total-price table").html(`
-                <tr><td>SubTotal</td> <td>${total}</td></tr>
-                <tr><td>Tax</td> <td>${total * 0.2}</td></tr>
-                <tr><td>Total</td> <td>${total * 1.2}</td></tr>
-            `);
-        });
-
-        //Removing item from cart
-        $(document).on("click" , ".remove-item" , function () {
-            let itemId = $(this).data("id");
-            cartItems = cartItems.filter(item => item.id !== itemId);
-            sessionStorage.setItem("cartItems" , JSON.stringify(cartItems));
-            location.reload();
-        });
-
-        //Update Quantity in cart
-        $(document).on("change" , ".update-quantity" , function () {
-            let itemId = $(this).data("id");
-            let newQuantity = $(this).val();
-            cartItems = cartItems.map(item => item.id === itemId ? { ...item , quantity: parseInt(newQuantity)} : item);
-            sessionStorage.setItem("cartItems" , JSON.stringify(cartItems));
-            location.reload();
-        });
-    });
-
-</script> *@
+    </tbody>
+</table>

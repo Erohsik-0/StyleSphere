@@ -5,8 +5,7 @@ using StyleSphere.Models.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+
 
 builder.Services.AddSession();
 
@@ -32,6 +31,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 }).AddEntityFrameworkStores<AppDbContext>()
   .AddDefaultTokenProviders();
 
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 
 var app = builder.Build();
