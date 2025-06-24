@@ -21,6 +21,12 @@
                 <td>@item.Quantity</td>
                 <td>@item.Product?.price</td>
                 <td>@((item.Product?.price ?? 0) * item.Quantity)</td>
+                <td>
+                    <form asp-action="Remove" method="post">
+                        <input type="hidden" name="cartItemId" value="@item.Id"/>
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
             </tr>
         }
     </tbody>

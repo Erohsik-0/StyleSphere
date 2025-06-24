@@ -63,54 +63,54 @@ namespace StyleSphere.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult AddToCart(int id)
-        {
-            try
-            {
-                var product = _context.Products.FirstOrDefault(p => p.id == id);
-                if (product == null)
-                {
-                    _logger.LogWarning("Product with ID {Id} not found in AddToCart()", id);
-                    return NotFound($"Product with ID {id} not found.");
-                }
+        //[HttpPost]
+        //public IActionResult AddToCart(int id)
+        //{
+        //    try
+        //    {
+        //        var product = _context.Products.FirstOrDefault(p => p.id == id);
+        //        if (product == null)
+        //        {
+        //            _logger.LogWarning("Product with ID {Id} not found in AddToCart()", id);
+        //            return NotFound($"Product with ID {id} not found.");
+        //        }
 
-                product.isAddedToCart = true;
-                _context.SaveChanges();
+        //        product.isAddedToCart = true;
+        //        _context.SaveChanges();
 
-                return RedirectToAction("Index" , "Cart");
-                //return Ok($"Product with ID {id} added to cart.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error adding product with ID {Id} to cart", id);
-                return RedirectToAction("Error", "Home");
-            }
-        }
+        //        return RedirectToAction("Index" , "Cart");
+        //        //return Ok($"Product with ID {id} added to cart.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error adding product with ID {Id} to cart", id);
+        //        return RedirectToAction("Error", "Home");
+        //    }
+        //}
 
-        public IActionResult RemoveFromCart(int id)
-        {
-            try
-            {
-                var product = _context.Products.FirstOrDefault(p => p.id == id);
-                if (product == null)
-                {
-                    _logger.LogWarning("Product with ID {Id} not found in RemoveFromCart()", id);
-                    return NotFound($"Product with ID {id} not found.");
-                }
+        //public IActionResult RemoveFromCart(int id)
+        //{
+        //    try
+        //    {
+        //        var product = _context.Products.FirstOrDefault(p => p.id == id);
+        //        if (product == null)
+        //        {
+        //            _logger.LogWarning("Product with ID {Id} not found in RemoveFromCart()", id);
+        //            return NotFound($"Product with ID {id} not found.");
+        //        }
 
-                product.isAddedToCart = false;
-                _context.SaveChanges();
+        //        product.isAddedToCart = false;
+        //        _context.SaveChanges();
 
-                return RedirectToAction("Index", "Cart");
-                //return Ok($"Product with ID {id} removed from cart.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error removing product with ID {Id} from cart", id);
-                return RedirectToAction("Error", "Home");
-            }
-        }
+        //        return RedirectToAction("Index", "Cart");
+        //        //return Ok($"Product with ID {id} removed from cart.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error removing product with ID {Id} from cart", id);
+        //        return RedirectToAction("Error", "Home");
+        //    }
+        //}
 
     }
 }

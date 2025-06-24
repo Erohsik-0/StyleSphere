@@ -57,7 +57,7 @@ ViewData["Title"] = "Product Details";
                 <option>L</option>
                 <option>XL</option>
             </select>
-            <form asp-action="AddToCart" asp-controller="Products" method="post"> 
+            <form asp-action="AddToCart" asp-controller="Cart" method="post"> 
                 <input type="hidden" name="id" value="@Model.id" />
                
                 <button class="btn" type="submit">Add to Cart</button>

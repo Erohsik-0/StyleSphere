@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StyleSphere.Data;
-using StyleSphere.Models.User;
+using StyleSphere.Models.UserEntity;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using StyleSphere.Models.ProductEntity;
-using StyleSphere.Models.User;
+using StyleSphere.Models.UserEntity;
 
 namespace StyleSphere.Models.CartEntity
 {
@@ -13,8 +13,8 @@ namespace StyleSphere.Models.CartEntity
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        public string userId { get; set; }
-        //public User User { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
 
         public int Quantity { get; set; }
     }

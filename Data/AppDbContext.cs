@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StyleSphere.Models.ProductEntity;
-using StyleSphere.Models.User;
+using StyleSphere.Models.UserEntity;
 using StyleSphere.Models.CartEntity;
 
 
@@ -25,7 +25,6 @@ namespace StyleSphere.Data
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("Product", "productSchema");
 
                 entity.HasKey(e => e.id);
 

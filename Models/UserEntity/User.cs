@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace StyleSphere.Models.User
+namespace StyleSphere.Models.UserEntity
 {
     public class User : IdentityUser
     {

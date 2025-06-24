@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StyleSphere.Data;
 using StyleSphere.Models.CartEntity;
-using StyleSphere.Models.User;
-using System.Linq;
-using System.Threading.Tasks;
+using StyleSphere.Models.UserEntity;
+
 
 namespace StyleSphere.Controllers
 {
@@ -25,12 +24,74 @@ namespace StyleSphere.Controllers
         }
 
         
+        //Viewing the cart for the current user
         public async Task<IActionResult> Index()
         {
-            //var userId = _userManager.GetUserId(User);
-            //var cartItems = await _context.CartItems.Where(ci => ci.User == userId).Include(ci => ci.Product).ToListAsync();
 
-            return View();
+            var userId = _userManager.GetUserId(User);
+            var cartItems = await _context.CartItems.Where(c => c.UserId == userId).Include(c => c.Product).ToListAsync();
+
+            return View(cartItems);
         }
+
+        //Add to cart for the current user 
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(int productId , int quantity=1)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            // Ensure Product Exists
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                // Optionally, display an error to the user
+                return NotFound("Product does not exist.");
+            }
+
+            var existingItem = await _context.CartItems.FirstOrDefaultAsync( c => c.ProductId == productId && c.UserId == userId);
+
+            if ( existingItem != null)
+            {
+                existingItem.Quantity += quantity;
+            }
+            else
+            {
+                var cartItem = new CartItem
+                {
+                    ProductId = productId,
+                    UserId = userId,
+                    Quantity = quantity
+                };
+
+                _context.CartItems.Add(cartItem);
+
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+
+
+        }
+
+
+        //Remove from cart for the current user
+        [HttpPost]
+        public async Task<IActionResult> Remove(int cartItemId)
+        {
+
+            var userId = _userManager.GetUserId(User);
+            var cartItem = await _context.CartItems
+                .FirstOrDefaultAsync( c => c.Id == cartItemId && c.UserId == userId);
+
+            if ( cartItem != null)
+            {
+                _context.CartItems.Remove(cartItem);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

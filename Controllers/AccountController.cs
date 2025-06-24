@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using StyleSphere.Models.ViewModel;
-using StyleSphere.Models.User;
+using StyleSphere.Models.UserEntity;
 using System.Threading.Tasks;
 
 
