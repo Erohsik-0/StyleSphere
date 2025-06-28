@@ -572,6 +572,17 @@ td:last-child , th:last-child{
     border-radius: 15px;
 }
 
+.form-container .regFormContainer{
+    width: 300px;
+}
+
+.form-container .regFormContainer span{
+    width: 300px;
+    display: flex;
+}
+
+
+
 .form-container span{
     font-weight: bold;
     padding: 0 10px;

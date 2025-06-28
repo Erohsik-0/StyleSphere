@@ -3,7 +3,13 @@
     ViewData["Title"] = "Your Cart";
     Layout = "_Layout";
 }
-<h2>Your Cart</h2>
+
+@if (TempData["CartError"] != null) 
+{
+    <div class="alert alert-danger">@TempData["CartError"]</div>    
+}
+
+
 <table>
     <thead>
         <tr>
@@ -17,10 +23,10 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Product?.name</td>
+                <td><img src="@item.Product?.buyimage" /></td>
                 <td>@item.Quantity</td>
                 <td>@item.Product?.price</td>
-                <td>@((item.Product?.price ?? 0) * item.Quantity)</td>
+                <td style="right:0;">@((item.Product?.price ?? 0) * item.Quantity)</td>
                 <td>
                     <form asp-action="Remove" method="post">
                         <input type="hidden" name="cartItemId" value="@item.Id"/>

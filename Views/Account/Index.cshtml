@@ -1,4 +1,5 @@
-﻿@model dynamic
+﻿@using StyleSphere.Models.ViewModel
+@model dynamic
 @{
     ViewData["Title"] = "Account";
     Layout = "_Layout";
@@ -12,73 +13,13 @@
             <div class="col-2">
                 <div class="form-container">
                     <div class="form-btn">
-                        <span id="loginTab" class="active">Login</span>
-                        <span id="regTab">Register</span>
-                        <hr id="indicator" style="width: 50%; border: 2px solid #ff523b; margin:0;">
+
+                        <p> <a asp-controller="Account" asp-action="Login">Login</a></p>
+                        <p> <a asp-controller="Account" asp-action="Register">Register</a></p>
                     </div>
 
-                    <!-- Login Form -->
-                    <form id="loginForm" style="display: block;" method="post" asp-action="Login" asp-controller="Account">
-                        @Html.AntiForgeryToken()
-                        <label for="Email">Email</label>
-                        <input type="text" id="Email" name="Email" />
-                        <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" name="Password" />
-                        <button type="submit" class="btn">Login</button>
-                        <a href="#">Forgot Password</a>
-                 
-                    </form>
-
-                    <!-- Register Form -->
-                    <form id="regForm" style="display: none;" method="post" asp-action="Register" asp-controller="Account">
-                        @Html.AntiForgeryToken()
-                        <label for="Name">Username</label>
-                        <input type="text" id="Name" name="Name" />
-                        <label for="Email">Email</label>
-                        <input type="email" id="Email" name="Email" />
-                        <label for="Password">Password</label>
-                        <input type="password" id="Password" name="Password" />
-                        <label for="ConfirmPassword">Confirm Password</label>
-                        <input type="password" id="ConfirmPassword" name="ConfirmPassword" />
-                        <button type="submit" class="btn">Register</button>
-                    </form>
-                    <div asp-validation-summary="All" class="text-danger"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const loginTab = document.getElementById("loginTab");
-            const regTab = document.getElementById("regTab");
-            const loginForm = document.getElementById("loginForm");
-            const regForm = document.getElementById("regForm");
-            const indicator = document.getElementById("indicator");
-
-            // Default state
-            loginForm.style.display = "block";
-            regForm.style.display = "none";
-            loginTab.classList.add("active");
-            regTab.classList.remove("active");
-
-            regTab.addEventListener("click", () => {
-                indicator.style.transform = "translateX(100%)";
-                loginForm.style.display = "none";
-                regForm.style.display = "block";
-                loginTab.classList.remove("active");
-                regTab.classList.add("active");
-            });
-
-            loginTab.addEventListener("click", () => {
-                indicator.style.transform = "translateX(0%)";
-                loginForm.style.display = "block";
-                regForm.style.display = "none";
-                loginTab.classList.add("active");
-                regTab.classList.remove("active");
-            });
-        });
-    </script>
-}

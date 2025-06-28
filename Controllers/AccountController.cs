@@ -27,6 +27,10 @@ namespace StyleSphere.Controllers
             return View(new AccountCombinedViewModel());
         }
 
+        public IActionResult Login()
+        {
+            return View();
+        }
 
         //Post: /Account/Login
         [HttpPost]
@@ -53,10 +57,14 @@ namespace StyleSphere.Controllers
             }
 
             ModelState.AddModelError("", "Invalid login attempt!");
-            return View("Index");
+            return View();
 
         }
 
+        public IActionResult Register()
+        {
+            return View();
+        }
 
         //Post: /Account/Register
         [HttpPost]
@@ -66,7 +74,7 @@ namespace StyleSphere.Controllers
 
             if(!ModelState.IsValid)
             {
-                return View("Index");
+                return View();
             }
 
             var user = new User { Email = model.Email, fullname = model.Name, UserName = model.Name };
@@ -84,7 +92,7 @@ namespace StyleSphere.Controllers
             //    ModelState.AddModelError("" , error.Description);
             //}
 
-            return View("Index");
+            return View("Register");
 
         }
 

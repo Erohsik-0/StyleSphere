@@ -29,7 +29,10 @@ namespace StyleSphere.Controllers
         {
 
             var userId = _userManager.GetUserId(User);
-            var cartItems = await _context.CartItems.Where(c => c.UserId == userId).Include(c => c.Product).ToListAsync();
+            var cartItems = await _context.CartItems
+                .Where(c => c.UserId == userId)
+                .Include(c => c.Product)
+                .ToListAsync();
 
             return View(cartItems);
         }
@@ -37,16 +40,18 @@ namespace StyleSphere.Controllers
         //Add to cart for the current user 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCart(int productId , int quantity=1)
         {
             var userId = _userManager.GetUserId(User);
 
             // Ensure Product Exists
             var product = await _context.Products.FindAsync(productId);
+
             if (product == null)
             {
-                // Optionally, display an error to the user
-                return NotFound("Product does not exist.");
+                TempData["CartError"] = "Product not found. Please select a valid product.";
+                return RedirectToAction("Index", "Products");
             }
 
             var existingItem = await _context.CartItems.FirstOrDefaultAsync( c => c.ProductId == productId && c.UserId == userId);
