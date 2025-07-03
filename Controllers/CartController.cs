@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StyleSphere.Data;
-using StyleSphere.Models.CartEntity;
-using StyleSphere.Models.UserEntity;
+using StyleSphere.Domain.Interfaces.ICart;
+using StyleSphere.Domain.Entities;
+
+using StyleSphere.ViewModels;
 
 
 namespace StyleSphere.Controllers
@@ -14,13 +16,15 @@ namespace StyleSphere.Controllers
     public class CartController : Controller
     {
         
-        private readonly AppDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly ICartService _cartService;
+        private readonly IMapper _mapper;
 
-        public CartController(AppDbContext context , UserManager<User> userManager)
+        public CartController(UserManager<User> userManager , ICartService cartService , IMapper mapper)
         {
             _userManager = userManager;
-            _context = context;
+            _cartService = cartService;
+            _mapper = mapper;
         }
 
         
@@ -29,12 +33,10 @@ namespace StyleSphere.Controllers
         {
 
             var userId = _userManager.GetUserId(User);
-            var cartItems = await _context.CartItems
-                .Where(c => c.UserId == userId)
-                .Include(c => c.Product)
-                .ToListAsync();
+            var cartItems = await _cartService.GetCartAsync(userId);
 
-            return View(cartItems);
+            var viewModel = _mapper.Map<List<CartViewModel>>(cartItems);
+            return View(viewModel);
         }
 
         //Add to cart for the current user 
@@ -45,35 +47,9 @@ namespace StyleSphere.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            // Ensure Product Exists
-            var product = await _context.Products.FindAsync(productId);
+            
 
-            if (product == null)
-            {
-                TempData["CartError"] = "Product not found. Please select a valid product.";
-                return RedirectToAction("Index", "Products");
-            }
-
-            var existingItem = await _context.CartItems.FirstOrDefaultAsync( c => c.ProductId == productId && c.UserId == userId);
-
-            if ( existingItem != null)
-            {
-                existingItem.Quantity += quantity;
-            }
-            else
-            {
-                var cartItem = new CartItem
-                {
-                    ProductId = productId,
-                    UserId = userId,
-                    Quantity = quantity
-                };
-
-                _context.CartItems.Add(cartItem);
-
-            }
-
-            await _context.SaveChangesAsync();
+            await _cartService.AddToCartAsync(userId, productId, quantity);
             return RedirectToAction("Index");
 
 
@@ -86,15 +62,16 @@ namespace StyleSphere.Controllers
         {
 
             var userId = _userManager.GetUserId(User);
-            var cartItem = await _context.CartItems
-                .FirstOrDefaultAsync( c => c.Id == cartItemId && c.UserId == userId);
-
-            if ( cartItem != null)
+            try
             {
-                _context.CartItems.Remove(cartItem);
-                await _context.SaveChangesAsync();
+                await _cartService.RemoveAsync(cartItemId);
             }
-
+            catch(Exception ex)
+            {
+                               // Handle the exception (e.g., log it, show an error message, etc.)
+                ModelState.AddModelError("", "An error occurred while removing the item from the cart.");
+                return View("Index");
+            }
             return RedirectToAction("Index");
         }
 

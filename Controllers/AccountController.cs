@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using StyleSphere.Models.ViewModel;
-using StyleSphere.Models.UserEntity;
+using StyleSphere.Domain.Entities;
 using System.Threading.Tasks;
 
 
@@ -45,7 +45,7 @@ namespace StyleSphere.Controllers
             var user =  await _userManager.FindByEmailAsync(model.Email);
             if ( user != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(user , model.Password , false , false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email , model.Password , false , true);
                 if (result.Succeeded)
                 {
                     if( !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
@@ -71,29 +71,40 @@ namespace StyleSphere.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
 
-            if(!ModelState.IsValid)
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
             {
-                return View();
+                var msg = "Email already registered. Please log in.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, errors = new[] { msg } });
+                TempData["RegisterMessage"] = msg;
+                return RedirectToAction("Login", "Account");
             }
 
-            var user = new User { Email = model.Email, fullname = model.Name, UserName = model.Name };
-
-            var result = await _userManager.CreateAsync( user , model.Password);
+            var user = new User { UserName = model.Email, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, false);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
                 return RedirectToAction("Index", "Home");
             }
 
-            //foreach ( var error in result.Errors)
-            //{
-            //    ModelState.AddModelError("" , error.Description);
-            //}
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
 
-            return View("Register");
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return Json(new { success = false, errors = result.Errors.Select(e => e.Description).ToList() });
 
+
+            return View(model);
         }
 
         //[HttpPost]

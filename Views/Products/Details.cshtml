@@ -1,174 +1,151 @@
-﻿@model StyleSphere.Models.ProductEntity.Product
-
+﻿@model StyleSphere.Models.ViewModel.ProductViewModel
 @{
-Layout = "_Layout";
-ViewData["Title"] = "Product Details";
+    ViewData["Title"] = Model?.Name ?? "Product Details";
+    Layout = "_Layout";
 }
 
-
-@* <!--Single Product Details-->
-<div class="small-container single-product" id="product-details-container"></div> *@
-
-@* For debugging to see if the model is implemented properly *@
-@* @Model.id; *@
-
-
-@* <div class="container mt-4">
-    <h2>@Model.name</h2>
-    <img src="@Model.image" alt="@Model.name" class="img-thumbnail" style ="max-width: 200px;"/>
-    <p class="mt-2"><strong>Price:</strong> @Model.price.ToString("C")</p>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal">
-        View more details
-    </button>
-</div> *@
-
-
-@* Modal *@
-
-
-    
-    <div class="row">
-        <div class="col-2">
-            <img src="@Model.image" width=100% id="product-image" />
-        </div>
-        <div class="col-2">
-            <h1>@Model.name</h1>
-            <h4>₹@Model.price.00</h4>
-            <div class="rating">
-                @for (int j = 1; j <= 5; j++)
-                {
-                    if (j <= @Model.rating)
-                    {
-                        <i class="fa fa-star"></i>
-                    }
-                    else
-                    {
-                        <i class="fa fa-star-o"></i>
-                    }
-                }
-            </div>
-            <div>
-
-            </div>
-            <select name="size" >
-                <option>Select Size</option>
-                <option>S</option>
-                <option>M</option>
-                <option>L</option>
-                <option>XL</option>
-            </select>
-
-            
-
-            <form asp-action="AddToCart" asp-controller="Cart" method="post"> 
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="productId" value="@Model.id" />
-                <input type="hidden" name="quantity"/>
-                <button class="btn" type="submit">Add to Cart</button>
-            </form>
-
-            <h3>Product Details</h3>
-            <p>@Model.description</p>
-        </div>
-    </div>
-
-
-
-
-@* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> *@
-@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
-@* <script src="~/js/site.js"></script> *@
-
-@* <script>
-    $(document).ready(function () {
-        // Function to extract product ID from URL
-        function getProductIdFromUrl() {
-            const segments = window.location.pathname.split('/');
-            return parseInt(segments[segments.length - 1]); // Get last part of URL
+@section Styles {
+    <style>
+        .product-details-container {
+            max-width: 950px;
+            margin: 48px auto 0 auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.09);
+            padding: 40px 32px 32px 32px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: flex-start;
         }
 
-        const productId = getProductIdFromUrl();
+        .product-image-section {
+            flex: 1 1 340px;
+            min-width: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        // Fetch all products and find the one with matching ID
-        $.getJSON('/Products/GetProducts', function (products) {
-            console.log(products);
-            const product = products.find(p => p.id === productId);
-
-            if (!product) {
-                console.error("Product not found");
-                return;
+            .product-image-section img {
+                width: 100%;
+                max-width: 340px;
+                border-radius: 12px;
+                box-shadow: 0 4px 24px rgba(255,82,59,0.10);
+                background: #fafafa;
+                object-fit: cover;
+                transition: transform 0.3s;
             }
 
-            // console.log(product.image);
+                .product-image-section img:hover {
+                    transform: scale(1.04) rotate(-1deg);
+                    box-shadow: 0 8px 32px rgba(255,82,59,0.18);
+                }
 
-            // Generate dynamic star ratings
-            let stars = '';
-            for (let j = 1; j <= 5; j++) {
-                stars += `<i class="fa ${j <= product.rating ? 'fa-star' : 'fa-star-o'}"></i>`;
+        .product-info-section {
+            flex: 2 1 400px;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .product-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .product-rating {
+            margin-bottom: 10px;
+        }
+
+            .product-rating .fa {
+                color: orangered;
+                font-size: 1.2rem;
             }
 
-            const $row = $('<div class="row"></div>');
+        .product-price {
+            font-size: 1.5rem;
+            color: #ff5e42;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 
-            const leftCol = $(`
-                <div class="col-2">
-                    <img src="/${product.image}" width="100%" id="product-image" />
-                </div>
-            `);
+        .product-description {
+            color: #444;
+            font-size: 1.08rem;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
 
-            const rightCol = $(`
-                <div class="col-2">
-                    <h1>${product.name}</h1>
-                    <h4>${product.price}</h4>
-                    <div class="rating">${stars}</div>
-                    <select>
-                        <option>Select Size</option>
-                        <option>S</option>
-                        <option>M</option>
-                        <option>L</option>
-                        <option>XL</option>
-                    </select>
-                    <input type="number" value="1" />
-                    <button class="btn">Add to Cart</button>
-                    <h3>Product Details</h3>
-                    <p>This is a ${product.name.toLowerCase()} made from high-quality material, designed for style and comfort.</p>
-                </div>
-            `);
+        .add-to-cart-btn {
+            display: inline-block;
+            background: #ff5e42;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255,82,59,0.10);
+            transition: background 0.2s, transform 0.2s;
+        }
 
-            $row.append(leftCol).append(rightCol);
-            $('#product-details-container').append($row);
-
-            rightCol.find('.btn').on('click' , function () {
-            const quantity = parseInt(rightCol.find('input[type="number"]').val());
-            const size = rightCol.find('select').val();
-
-            if ( size === "Select Size" ){
-                alert("Please select a size");
-                return;
+            .add-to-cart-btn:hover {
+                background: #d8432b;
+                transform: scale(1.04);
             }
+        @@media (max-width: 900px) {
+            .product-details-container
 
-            let cart = JSON.parse(sessionStorage.getItem("cartItems")) || [];
-            console.log("Cart before adding item: ", cart);
-            const existingIndex  = cart.findIndex( item => item.id === product.id && item.size === size);
-            console.log("Exisiting Index: ",existingIndex);
-            if ( existingIndex != -1 ) {
-                cart[existingIndex].quantity += quantity;
-            } else {
-                cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    image: product.buyimage,
-                    size: size,
-                    quantity: quantity
-                });
+        {
+            flex-direction: column;
+            padding: 24px 8px;
+        }
+
+        .product-image-section, .product-info-section {
+            min-width: 0;
+        }
+
+        }
+    </style>
+}
+
+<div class="product-details-container">
+    <div class="product-image-section">
+        <img src="@Model?.Image" alt="@Model?.Name" />
+    </div>
+    <div class="product-info-section">
+        <div class="product-title">@Model?.Name</div>
+        <div class="product-rating">
+            @for (int i = 1; i <= 5; i++)
+            {
+                if (i <= (Model?.Rating ?? 0))
+                {
+                    <i class="fa fa-star"></i>
+                }
+                else
+                {
+                    <i class="fa fa-star-o"></i>
+                }
             }
-
-            sessionStorage.setItem("cartItems", JSON.stringify(cart));
-            alert("product added to cart!!!");
-        });
-
-        });
-    });
-</script> *@
-
-
+            <span style="margin-left:8px; color:#888; font-size:1rem;">
+                @((Model?.Rating ?? 0).ToString("0.0"))/5
+            </span>
+        </div>
+        <div class="product-price">₹@Model?.Price.00</div>
+        <div class="product-description">
+            @Model?.Description
+        </div>
+        <form asp-action="AddToCart" asp-controller="Cart" method="post" style="margin-top:18px;">
+            <input type="hidden" name="productId" value="@Model?.Id" />
+            <button type="submit" class="add-to-cart-btn">
+                <i class="fa fa-shopping-cart"></i> Add to Cart
+            </button>
+        </form>
+    </div>
+</div>

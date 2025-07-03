@@ -1,4 +1,4 @@
-﻿@using StyleSphere.Models.UserEntity
+﻿@using StyleSphere.Domain.Entities
 @inject Microsoft.AspNetCore.Identity.SignInManager<User> signInManager
 
 <!DOCTYPE html>
@@ -19,7 +19,6 @@
     <div id="preloader"></div>
 
     <div class="header">
-        <div class="container">
             <div class="navbar">
                 <a asp-area="" asp-controller="Home" asp-action="Index"><h1>StyleSphere</h1></a>
                 <nav class="nav-link">
@@ -28,7 +27,12 @@
                         <li><a asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
                         <li><a asp-area="" asp-controller="About" asp-action="Index">About</a></li>
                         <li><a asp-area="" asp-controller="Error" asp-action="Error404">Contact</a></li>
-                        <li><a asp-area="" asp-controller="Account" asp-action="Index">Account</a></li>
+                        <li>
+                            @if (signInManager.IsSignedIn(User))
+                            {
+                                <a asp-controller="Profile" asp-action="Index">Profile</a>
+                            }
+                        </li>
                     </ul>
                 </nav>
                 <div id="user-controls">
@@ -48,7 +52,6 @@
                 <img src="~/images/menu.png" class="menu-icon" onclick="menuToggle()" />
                 
             </div>
-        </div>
         <hr />
 
     </div>

@@ -1,0 +1,482 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model StyleSphere.Models.ViewModel.ProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "_Layout";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+    .profile-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(60,72,98,0.16);
+        padding: 32px;
+        margin-top: 40px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #e9ecef;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        margin-bottom: 12px;
+    }
+
+    .profile-label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 4px;
+    }
+
+    .verified-badge {
+        color: #1bc47d;
+        font-size: 1.2em;
+        vertical-align: middle;
+    }
+
+    .not-verified-badge {
+        color: #f44336;
+        font-size: 1.2em;
+        vertical-align: middle;
+    }
+
+    .form-control:disabled {
+        background: #f5f6fa !important;
+    }
+
+    .btn-outline-primary,
+    .btn-primary,
+    .btn-outline-secondary,
+    .btn {
+        background: #000 !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 20px !important;
+        transition: color 0.2s, background 0.2s;
+    }
+
+        .btn-outline-primary:hover,
+        .btn-primary:hover,
+        .btn-outline-secondary:hover,
+        .btn:hover,
+        .btn:focus {
+            color: #ffb347 !important;
+            background: #000 !important;
+            border: none !important;
+        }
+
+    #activityLog {
+        font-size: 0.98em;
+        border-radius: 8px;
+    }
+
+    /* Animated message styles (professional, no emoji, black bg, white text, smooth fades) */
+    .profile-animated-msg {
+        display: none;
+        opacity: 0;
+        position: fixed;
+        top: 7vh;
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 280px;
+        max-width: 90vw;
+        z-index: 2000;
+        padding: 18px 32px;
+        font-size: 1.08em;
+        font-weight: 500;
+        color: #fff;
+        background: #111;
+        border-radius: 13px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 0 25px #0002;
+        text-align: center;
+        border: 1.5px solid #222;
+        letter-spacing: 0.5px;
+        transition: opacity 0.4s cubic-bezier(.7,0,.3,1);
+        pointer-events: none;
+        user-select: none;
+    }
+
+        .profile-animated-msg.show {
+            display: block;
+            opacity: 1;
+        }
+
+    .modal-content {
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .modal-header {
+        border-bottom: none;
+        padding-bottom: 0.5rem;
+        padding-top: 1.6rem;
+    }
+
+    .modal-footer {
+        border-top: none;
+        padding-bottom: 1.6rem;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        font-size: 1.18rem;
+        color: #222;
+    }
+
+    .modal .btn-close {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        z-index: 10;
+        background: none;
+        opacity: 0.6;
+        box-shadow: none;
+        outline: none;
+    }
+
+        .modal .btn-close:hover {
+            opacity: 1;
+        }
+
+    .modal .btn {
+        background: #000 !important;
+        color: #fff !important;
+        border-radius: 20px;
+        border: none;
+    }
+
+        .modal .btn:hover, .modal .btn:focus {
+            color: #ffb347 !important;
+            background: #000 !important;
+        }
+    /* Fix modal close icon for better click area */
+    .modal-header .btn-close {
+        margin: -0.5rem -0.5rem -0.5rem auto;
+        padding: 0.8rem 1rem;
+        font-size: 1.25rem;
+    }
+</style>
+
+<!-- Animated Message Overlay -->
+<div id="profileSuccessMsg" class="profile-animated-msg"></div>
+<div id="profileErrorMsg" class="profile-animated-msg"></div>
+
+<div class="container">
+    <div class="profile-card shadow">
+        <div class="text-center mb-4">
+            <img id="avatarPreview" src="@(Model.AvatarUrl ?? Url.Content("~/images/default-avatar.png"))"
+                 alt="Avatar" class="profile-avatar" />
+            <div>
+                <label for="avatarFile" class="btn btn-outline-primary btn-sm mt-2">
+                    Change Avatar
+                </label>
+            </div>
+        </div>
+
+        <form id="profileForm" method="post" enctype="multipart/form-data" asp-controller="Profile" asp-action="Update">
+            <input type="file" name="AvatarFile" id="avatarFile" accept="image/*" class="d-none" />
+
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="mb-3">
+                <label class="profile-label">Full Name:</label>
+                <input type="text" name="UserName" value="@Model.UserName" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="profile-label">Email:</label>
+                <div class="input-group">
+                    <input type="email" value="@Model.Email" disabled class="form-control" id="profileEmailInput"/>
+                    @if (!Model.EmailConfirmed)
+                    {
+                        <button type="button" id="verifyEmailBtn" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#verifyEmailModal">
+                            Verify
+                        </button>
+                    }
+                </div>
+                <small class="text-muted">
+                    @if (Model.EmailConfirmed)
+                    {
+                        <span class="verified-badge">Email Verified &#10003;</span>
+                    }
+                    else
+                    {
+                        <span class="not-verified-badge">Email not verified &#10007;</span>
+                    }
+                </small>
+            </div>
+
+            <div class="mb-3">
+                <label class="profile-label">Phone Number</label>
+                <div class="input-group">
+                    <input type="text" name="PhoneNumber" value="@Model.PhoneNumber" class="form-control" />
+                    @if (!Model.PhoneNumberConfirmed)
+                    {
+                        <button type="button" id="verifyPhoneBtn" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#verifyPhoneModal">
+                            Verify
+                        </button>
+                    }
+                </div>
+                <small class="text-muted">
+                    @if (Model.PhoneNumberConfirmed)
+                    {
+                        <span class="verified-badge">Number Verified &#10003;</span>
+                    }
+                    else
+                    {
+                        <span class="not-verified-badge">Number not verified &#10007;</span>
+                    }
+                </small>
+            </div>
+
+            <div class="mb-3">
+                <label class="profile-label">Access Failed Count:</label>
+                <span class="ms-2">@Model.AccessFailedCount</span>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">Update Profile</button>
+            </div>
+        </form>
+
+        <hr class="my-4" />
+
+        <h5 class="mb-3">Activity Log</h5>
+        <div id="activityLog" style="max-height:150px;overflow-y:auto;background:#f8f9fa;padding:10px;border: 1px solid #ddd;">
+            <!-- Activity logs will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Email Verification Modal -->
+<div class="modal fade" id="verifyEmailModal" tabindex="-1" aria-labelledby="verifyEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="emailVerifyForm">
+                <div class="modal-header pb-0 pt-4">
+                    <h5 class="modal-title" id="verifyEmailModalLabel">Verify Email</h5>
+                </div>
+                <div class="modal-body pt-2">
+                    <p>A verification code will be sent to <strong>@Model.Email</strong></p>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-outline-secondary" id="sendEmailCodeBtn">Send Code</button>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="emailCode" id="emailCodeInput" placeholder="Enter verification code" disabled required>
+                    </div>
+                    <div class="text-danger" id="emailCodeError"></div>
+                </div>
+                <div class="modal-footer pt-0">
+                    <button type="submit" class="btn btn-primary" id="confirmEmailBtn" disabled>Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Phone Verification Modal -->
+<div class="modal fade" id="verifyPhoneModal" tabindex="-1" aria-labelledby="verifyPhoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="phoneVerifyForm">
+                <div class="modal-header pb-0 pt-4">
+                    <h5 class="modal-title" id="verifyPhoneModalLabel">Verify Phone Number</h5>
+                </div>
+                <div class="modal-body pt-2">
+                    <p>A verification code will be sent to <strong>@Model.PhoneNumber</strong></p>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-outline-secondary" id="sendPhoneCodeBtn">Send Code</button>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="phoneCode" id="phoneCodeInput" placeholder="Enter verification code" disabled required>
+                    </div>
+                    <div class="text-danger" id="phoneCodeError"></div>
+                </div>
+                <div class="modal-footer pt-0">
+                    <button type="submit" class="btn btn-primary" id="confirmPhoneBtn" disabled>Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    // Helper: show animated error/success
+    function showAnimatedMsg(type, msg) {
+        var div = document.getElementById(type === "success" ? "profileSuccessMsg" : "profileErrorMsg");
+        var otherDiv = document.getElementById(type === "success" ? "profileErrorMsg" : "profileSuccessMsg");
+        div.textContent = msg;
+        otherDiv.classList.remove("show");
+        div.classList.add("show");
+        setTimeout(function () {
+            div.classList.remove("show");
+        }, 3200);
+    }
+
+    // Avatar preview
+    document.getElementById("avatarFile").addEventListener("change", function () {
+        if (this.files.length > 0) {
+            const file = this.files[0];
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById("avatarPreview").src = e.target.result;
+                showAnimatedMsg("success", "Avatar preview updated!");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // AJAX Profile Update Handler for Error and Success Display
+       document.getElementById("profileForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var form = e.target;
+        var formData = new FormData(form);
+        axios.post(form.getAttribute("action"), formData)
+            .then(function (resp) {
+                if (resp.data && resp.data.success === false && resp.data.errors && resp.data.errors.length > 0) {
+                    showAnimatedMsg("error", resp.data.errors[0].description);
+                } else if (resp.data && resp.data.success === true) {
+                    showAnimatedMsg("success", "Profile updated successfully!");
+                    setTimeout(function () { window.location.reload(); }, 1800);
+                } else {
+                    form.submit();
+                }
+            })
+            .catch(function (err) {
+                // Handle server-side validation errors
+                if (err.response && err.response.data && err.response.data.errors && err.response.data.errors.length > 0) {
+                    showAnimatedMsg("error", err.response.data.errors[0].description);
+                } else {
+                    showAnimatedMsg("error", "Unexpected error. Please try again!");
+                }
+            });
+    });
+
+    // Email Verification
+    const sendEmailCodeBtn = document.getElementById("sendEmailCodeBtn");
+    const emailCodeInput = document.getElementById("emailCodeInput");
+    const confirmEmailBtn = document.getElementById("confirmEmailBtn");
+    const emailCodeError = document.getElementById("emailCodeError");
+    const emailValue = document.getElementById("profileEmailInput").value;
+
+    sendEmailCodeBtn?.addEventListener("click", function () {
+        sendEmailCodeBtn.disabled = true;
+        emailCodeInput.disabled = false;
+        axios.post('/Profile/SendEmailVerificationCode', { email: emailValue })
+            .then(() => {
+                showAnimatedMsg("success", "Verification code sent to your email!");
+                emailCodeInput.focus();
+                confirmEmailBtn.disabled = false;
+                emailCodeError.textContent = "";
+            })
+            .catch(() => {
+                showAnimatedMsg("error", "Failed to send verification code. Try again.");
+                emailCodeError.textContent = "Failed to send verification code. Try again.";
+                sendEmailCodeBtn.disabled = false;
+            });
+    });
+
+    document.getElementById("emailVerifyForm")?.addEventListener("submit", function (e) {
+        e.preventDefault();
+        confirmEmailBtn.disabled = true;
+        axios.post('/Profile/VerifyEmailCode', {
+            email: "@Model.Email",
+            code: emailCodeInput.value
+        })
+            .then(resp => {
+                if (resp.data.success) {
+                    showAnimatedMsg("success", "Email verified successfully!");
+                    emailCodeError.textContent = "";
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    showAnimatedMsg("error", "Invalid code.");
+                    emailCodeError.textContent = "Invalid code.";
+                    confirmEmailBtn.disabled = false;
+                }
+            })
+            .catch(() => {
+                showAnimatedMsg("error", "Verification failed.");
+                emailCodeError.textContent = "Verification failed.";
+                confirmEmailBtn.disabled = false;
+            });
+    });
+
+    // Phone Verification
+    const sendPhoneCodeBtn = document.getElementById("sendPhoneCodeBtn");
+    const phoneCodeInput = document.getElementById("phoneCodeInput");
+    const confirmPhoneBtn = document.getElementById("confirmPhoneBtn");
+    const phoneCodeError = document.getElementById("phoneCodeError");
+
+    sendPhoneCodeBtn?.addEventListener("click", function () {
+        sendPhoneCodeBtn.disabled = true;
+        phoneCodeInput.disabled = false;
+        axios.post('/Profile/SendPhoneVerificationCode', { phoneNumber: "@Model.PhoneNumber" })
+            .then(() => {
+                showAnimatedMsg("success", "Verification code sent to your phone!");
+                phoneCodeInput.focus();
+                confirmPhoneBtn.disabled = false;
+                phoneCodeError.textContent = "";
+            })
+            .catch(() => {
+                showAnimatedMsg("error", "Failed to send verification code. Try again.");
+                phoneCodeError.textContent = "Failed to send verification code. Try again.";
+                sendPhoneCodeBtn.disabled = false;
+            });
+    });
+
+    document.getElementById("phoneVerifyForm")?.addEventListener("submit", function (e) {
+        e.preventDefault();
+        confirmPhoneBtn.disabled = true;
+        axios.post('/Profile/VerifyPhoneCode', {
+            phoneNumber: "@Model.PhoneNumber",
+            code: phoneCodeInput.value
+        })
+            .then(resp => {
+                if (resp.data.success) {
+                    showAnimatedMsg("success", "Phone number verified successfully!");
+                    phoneCodeError.textContent = "";
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    showAnimatedMsg("error", "Invalid code.");
+                    phoneCodeError.textContent = "Invalid code.";
+                    confirmPhoneBtn.disabled = false;
+                }
+            })
+            .catch(() => {
+                showAnimatedMsg("error", "Verification failed.");
+                phoneCodeError.textContent = "Verification failed.";
+                confirmPhoneBtn.disabled = false;
+            });
+    });
+
+    // Activity log (fetch from API)
+    document.addEventListener("DOMContentLoaded", function () {
+        axios.get('/Profile/ActivityLog?userId=@Model.Id')
+            .then(resp => {
+                const logDiv = document.getElementById("activityLog");
+                if (resp.data?.length > 0) {
+                    logDiv.innerHTML = resp.data
+                        .map(l => `<div><span class="text-muted">${l.date}</span>: ${l.activity}</div>`)
+                        .join('');
+                    showAnimatedMsg("success", "Activity log loaded!");
+                } else {
+                    logDiv.textContent = "No activity yet.";
+                }
+            })
+            .catch(() => {
+                document.getElementById("activityLog").textContent = "Could not load activity log.";
+                showAnimatedMsg("error", "Could not load activity log.");
+            });
+    });
+</script>

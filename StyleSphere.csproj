@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
@@ -44,8 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Account\Login\" />
-    <Folder Include="Views\Account\Register\" />
+    <ProjectReference Include="..\StyleSphere.DataAccess\StyleSphere.DataAccess.csproj" />
+    <ProjectReference Include="..\StyleSphere.Domain\StyleSphere.Domain.csproj" />
+    <ProjectReference Include="..\StyleSphere.Service\StyleSphere.Service.csproj" />
   </ItemGroup>
 
 </Project>

@@ -13,7 +13,8 @@
     align-items: center;
     padding-top: 20px;
     padding-bottom: 20px;
-    
+    margin-left: 10px;
+    margin-right: 10px;
     justify-content: space-between;
 }
 
@@ -343,12 +344,14 @@ h4 {
 
 /*Footer*/
 .footer {
-    background-color: #111;
-    color: #f1f1f1;
-    left: 0;
-    bottom:0;
-    
-    width: 100%;
+    flex-shrink: 0;
+    background: #111;
+    color: #fff;
+    text-align: center;
+    padding: 16px 0 12px 0;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    border-top: 1px solid #222;
 }
 
 .footer .row {
@@ -940,7 +943,73 @@ form .btn:focus{
     .cart-info p{
         display:none;
     }
+
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 10px;
+    }
+
+    .menu-icon {
+        display: block;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        position: absolute;
+        top: 60px;
+        left: 0;
+        z-index: 100;
+    }
+
+        nav ul.open {
+            display: flex;
+        }
+
+    #user-controls {
+        margin-top: 10px;
+    }
 }
+.header {
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    position: relative;
+    z-index: 10;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    gap: 24px;
+}
+    .navbar h1, .navbar > a > span, .navbar > a > h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #222;
+        margin: 0;
+        text-decoration: none;
+    }
+
+#user-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.menu-icon {
+    display: none;
+    cursor: pointer;
+    margin-left: 18px;
+}
+
 
 /*Preloader*/
 #preloader {
@@ -958,3 +1027,37 @@ form .btn:focus{
     height:125px;
 }
 
+/* Custom Scrollbar - Elegant for White Background */
+html, body, * {
+    /* For Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #bbb #f0f0f0; /* thumb, track */
+}
+
+/* For Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: #f0f0f0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 8px;
+    border: 2px solid #f0f0f0;
+    transition: background 0.3s;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #888;
+    }
+
+::-webkit-scrollbar-track {
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* For overlay scrollbars on Mac/Win10+ */
+::-webkit-scrollbar-corner {
+    background: #f0f0f0;
+}

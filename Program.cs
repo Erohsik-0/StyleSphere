@@ -1,7 +1,14 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using StyleSphere.Data;
-using StyleSphere.Models.UserEntity;
+using StyleSphere.DataAccess.DbContext;
+using StyleSphere.DataAccess.Repositories;
+using StyleSphere.Domain.Interfaces.ICart;
+using StyleSphere.Domain.Interfaces.IProduct;
+using StyleSphere.Mapping;
+using StyleSphere.Domain.Entities;
+using StyleSphere.Service;
+using StyleSphere.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSession();
 
+// Adding AutoMapper support
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+
+
 // Adding Session support
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer("Server=.;Database=stylesphere_db;Trusted_Connection=True;TrustServerCertificate=True;");
+    options.UseSqlServer("Server=.;Database=stylesphere_db_v2;Trusted_Connection=True;TrustServerCertificate=True;");
 });
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -33,8 +48,14 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Index";
+    options.LoginPath = "/Account/Login";
 });
+
+// Register the email sender service
+builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+
+// Register the verification store service
+builder.Services.AddSingleton<IVerificationStore, InMemoryVerificationStore>();
 
 
 // Add services to the container.

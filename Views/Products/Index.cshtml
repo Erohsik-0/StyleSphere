@@ -1,27 +1,63 @@
-﻿@using StyleSphere.Models.ProductEntity
-@model List<Product>
+﻿@using StyleSphere.Models.ViewModel
+@model List<ProductViewModel>
 @{
-ViewData["Title"] = "Products";
-Layout = "_Layout"; 
-var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__" });
+    ViewData["Title"] = "Products";
+    Layout = "_Layout";
+    var detailsURLTemplate = Url.Action("Details", "Products", new { id = "__id__" });
 }
 
+<style>
+    .product-item {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        margin-bottom: 30px;
+    }
 
-<!--All-Products-->
+    .product-image {
+        width: 100%;
+        display: block;
+        border-radius: 8px;
+    }
+
+    .product-details-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.95);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 2;
+        text-align: center;
+    }
+
+        .product-details-card .rating {
+            margin: 8px 0;
+        }
+
+        .product-details-card .view-link {
+            margin-top: 10px;
+            display: inline-block;
+            padding: 6px 16px;
+            background: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+</style>
+
 <div class="small-container">
     <div class="row row-2">
         <h2>All Products</h2>
-        <select>
-            <option>Default Shopping</option>
-            <option>Sort by price</option>
-            <option>Sort by popularity</option>
-            <option>Sort by rating</option>
-            <option>Sort by sale</option>
-        </select>
     </div>
-
     <div id="products-container">
-        
         @{
             var products = Model.ToList();
             for (int i = 0; i < products.Count; i += 4)
@@ -29,100 +65,57 @@ var detailsURLTemplate = Url.Action("Details" , "Products" , new { id = "__id__"
                 <div class="row">
                     @foreach (var product in products.Skip(i).Take(4))
                     {
-                        <div class="col-4 product-item" data-id="@product.id">
-                            <a href="@Url.Action("Details", "Products", new { id = product.id })">
-                                <img src="@product.image" alt="@product.name"/>
-                                <h4>@product.name</h4>
+                        <div class="col-4 product-item" data-id="@product.Id"
+                             data-name="@product.Name"
+                             data-rating="@product.Rating"
+                             data-price="@product.Price"
+                             data-image="@product.Image"
+                             data-details-url="@Url.Action("Details", "Products", new { id = product.Id })">
+                            <img class="product-image" src="@product.Image" alt="@product.Name" />
+                            <div class="product-details-card">
+                                <h4>@product.Name</h4>
                                 <div class="rating">
-                                    @{
-                                        for (int j = 1; j <= 5; j++)
+                                    @for (int j = 1; j <= 5; j++)
+                                    {
+                                        if (j <= product.Rating)
                                         {
-                                            if (j <= product.rating)
-                                            {
-                                                <i class="fa fa-star"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="fa fa-star-o"></i>
-                                            }
+                                            <i class="fa fa-star"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-star-o"></i>
                                         }
                                     }
                                 </div>
-                                <p>₹@product.price.00</p>
-                            </a>
+                                <p>₹@product.Price.00</p>
+                                <a class="view-link" href="@Url.Action("Details", "Products", new { id = product.Id })">View Product</a>
+                            </div>
                         </div>
                     }
                 </div>
             }
         }
-
-        <div class="page-btn">
-            <span>1</span>
-            <span>2</span>
-            <span>3</span>
-            <span>4</span>
-            <span>&#8594</span>
-        </div>
-
     </div>
 </div>
 
-
-
-
-
-@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
-
-@* <script>
-    
-    const detailsURLTemplate = "@detailsURLTemplate";
-
-    $(document).ready(function () {
-
-        $.getJSON('/Products/GetProducts' , function (products) {
-
-            // console.log("Loaded Products: ", products); Debug
-
-            const $container = $('#products-container');
-
-            for ( let i = 0; i < products.length; i += 4){
-
-                const $row = $('<div class="row"></div>');
-                const group =  products.slice(i , i + 4);
-                
-                $.each(group , function(index , product) {
-                    let stars='';
-                    for ( let j = 0; j <= 5; j++){
-                        stars += `<i class="fa ${ j <= product.rating ? 'fa-star' : 'fa-star-o'}"></i>`;
-                    }
-
-                    const detailsURL = detailsURLTemplate.replace("__id__" , product.id);
-
-                    const productHTML = `
-                    <div class="col-4 product-item" data-id="${product.id}">
-                        <a href="${detailsURL}">
-                            <img src = "${product.image}" alt="${product.name}" />
-                            <h4> ${ product.name } </h4>
-                            <div class = "rating"> ${ stars } </div>
-                            <p> ${ product.price }</p>
-                            ${ product.link ? `</a>` : ''}
-                        <a>
-                    </div>
-                    `;
-                    $row.append(productHTML);
-                });
-
-            $container.append($row);
-            }
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const items = document.querySelectorAll('.product-item');
+        items.forEach(function(item) {
+            const card = item.querySelector('.product-details-card');
+            item.addEventListener('mouseenter', function() {
+                card.style.display = 'flex';
+            });
+            item.addEventListener('mouseleave', function() {
+                card.style.display = 'none';
+            });
+            // For accessibility: show on focus, hide on blur
+            item.addEventListener('focusin', function() {
+                card.style.display = 'flex';
+            });
+            item.addEventListener('focusout', function() {
+                card.style.display = 'none';
+            });
         });
-
-        $('#products-container').on('click' , '.product-items' , function(){
-            const id = $(this).data('id');
-            window.location.href = '@Url.Action("Details" , "Products" , new { id = "__id__" })'.replace("__id__" , id);
-        });
-
     });
-
 </script>
- *@
-

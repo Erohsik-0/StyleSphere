@@ -1,39 +1,175 @@
-﻿@model IEnumerable<StyleSphere.Models.CartEntity.CartItem>
+﻿@model List<StyleSphere.ViewModels.CartViewModel>
 @{
     ViewData["Title"] = "Your Cart";
     Layout = "_Layout";
+    var cartTotal = Model?.Sum(item => item.Price * item.Quantity) ?? 0;
 }
 
-@if (TempData["CartError"] != null) 
-{
-    <div class="alert alert-danger">@TempData["CartError"]</div>    
-}
-
-
-<table>
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Qty</th>
-            <th>Price</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td><img src="@item.Product?.buyimage" /></td>
-                <td>@item.Quantity</td>
-                <td>@item.Product?.price</td>
-                <td style="right:0;">@((item.Product?.price ?? 0) * item.Quantity)</td>
-                <td>
-                    <form asp-action="Remove" method="post">
-                        <input type="hidden" name="cartItemId" value="@item.Id"/>
-                        <button type="submit">Remove</button>
-                    </form>
-                </td>
-            </tr>
+@section Styles {
+    <style>
+        .cart-container {
+            max-width: 900px;
+            margin: 48px auto 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 32px 24px 24px 24px;
         }
-    </tbody>
-</table>
+
+        .cart-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 32px;
+        }
+
+            .cart-table th, .cart-table td {
+                text-align: center;
+                padding: 16px 8px;
+            }
+
+            .cart-table th {
+                background: #ff5e42;
+                color: #fff;
+                font-weight: 600;
+                font-size: 1.1rem;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+            }
+
+            .cart-table td {
+                background: #fafafa;
+                vertical-align: middle;
+                font-size: 1rem;
+            }
+
+        .cart-product-img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+            .cart-product-img:hover {
+                transform: scale(1.08) rotate(-2deg);
+                box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+            }
+
+        .remove-btn {
+            background: #ff5e42;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 7px 18px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+            .remove-btn:hover {
+                background: #d8432b;
+                transform: scale(1.07);
+            }
+
+        .cart-empty {
+            text-align: center;
+            color: #888;
+            font-size: 1.2rem;
+            margin: 40px 0;
+            letter-spacing: 1px;
+            animation: fadeIn 1s;
+        }
+
+        .cart-total-row td {
+            background: #fffbe7;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-top: 2px solid #ff5e42;
+            color: #222;
+            text-align: right;
+            padding-top: 18px;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+}
+
+<div class="cart-container">
+    @if (TempData["CartError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["CartError"]</div>
+    }
+
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th style="text-align:left;">Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr class="cart-row">
+                        <td style="display:flex; align-items:center; gap:18px; text-align:left;">
+                            <img class="cart-product-img" src="@item.ProductImage" alt="@item.ProductName" />
+                            <span>@item.ProductName</span>
+                        </td>
+                        <td>@item.Quantity</td>
+                        <td>₹@item.Price</td>
+                        <td>₹@item.TotalPrice</td>
+                        <td>
+                            <form asp-action="Remove" method="post" style="margin:0;">
+                                <input type="hidden" name="cartItemId" value="@item.CartId" />
+                                <button type="submit" class="remove-btn" onclick="removeRowEffect(this);return false;">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                <tr class="cart-total-row">
+                    <td colspan="3"></td>
+                    <td colspan="2">Total: ₹@cartTotal</td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="cart-empty">Your cart is empty.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function removeRowEffect(btn) {
+            // Animation: fade out row, then submit form
+            const row = btn.closest('.cart-row');
+            row.style.transition = 'opacity 0.4s, transform 0.4s';
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(40px)';
+            setTimeout(() => {
+                btn.closest('form').submit();
+            }, 400);
+        }
+    </script>
+}
