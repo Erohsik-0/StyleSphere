@@ -1,0 +1,64 @@
+﻿@using StyleSphere.Models.ViewModel
+
+@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Account";
+    Layout = "_Layout";
+}   
+
+<div class="account-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-2">
+                <img src="~/images/base.png" />
+            </div>
+            <div class="col-2">
+                <div class="">
+              
+                    <div class="regFormContainer">
+
+
+                        <!-- Register Form -->
+                        <form id="regForm" method="post" asp-action="Register" asp-controller="Account">
+                            @Html.AntiForgeryToken()
+                            <label asp-for="Name">Username</label>
+                            <br />
+                            <input type="text" id="Name" name="Name" asp-for="Name" />
+                            <br />
+                            <span asp-validation-for="Name"></span>
+                            <br />
+
+
+                            <label asp-for="Email">Email</label>
+                            <br />
+                            <input type="email" id="Email" name="Email" asp-for="Email" required />
+                            <br />
+                            <span asp-validation-for="Email"></span>
+                            <br />
+
+                            <label asp-for="Password">Password</label>
+                            <br />
+                            <input type="password" id="Password" name="Password" asp-for="Password" required />
+                            <br />
+                            <span asp-validation-for="Password"></span>
+                            <br />
+
+                            <label asp-for="ConfirmPassword">Confirm Password</label>
+                            <br />
+                            <input type="password" id="ConfirmPassword" name="ConfirmPassword" asp-for="ConfirmPassword" required />
+                            <br />
+                            <span asp-validation-for="ConfirmPassword"></span>
+                            <br />
+
+                            <button type="submit" class="btn">Register</button>
+                        </form>
+
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
